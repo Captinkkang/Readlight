@@ -1,17 +1,17 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    const dispatch = createEventDispatcher();
-    const Xsidebar = () =>{
-        dispatch('exit')
-    }
+    import { isMenuOpen } from "./stroe";
+    import { fly } from "svelte/transition";
 </script>
-<div class="side_content">
-    <div class="button-container">
-        <button on:click={Xsidebar}></button>
+{#if $isMenuOpen}
+    <div class="side_content" transition:fly={{x : 300, duration:500}}>
+        <div class="button-container">
+            <button on:click={() => $isMenuOpen = false}></button>
+        </div>
+        <div class="menu">추천/인기 도서</div>
+        <div class="menu">출판 예정 도서</div>
     </div>
-    <div class="menu">추천/인기 도서</div>
-    <div class="menu">출판 예정 도서</div>
-</div>
+{/if}
 
 <style>
     .button-container{
@@ -19,10 +19,15 @@
         justify-content: flex-end;
     }
     .side_content {
+        position:fixed;
+        right:0;
+        top:0;
         background-color: #536E8E;
-        width: 25vw;
-        height: calc(100vh - 40px);
-        border-radius: 20px;
+        width: 300px;
+        height: 100vh;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        z-index: 2;
     }
 
     .menu {
@@ -45,7 +50,7 @@
         border-radius: 25px;
         background-position: 15px ,5px;
         background-repeat: no-repeat;
-        transition: 0.5s;
+        transition:background 0.5s;
     }
     button:hover{
         cursor: pointer;

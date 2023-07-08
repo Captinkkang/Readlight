@@ -1,14 +1,27 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { fly } from "svelte/transition"
     //background-image: url("https://a-static.besthdwallpaper.com/hogwarts-library-wallpaper-1280x800-81797_3.jpg");
+    let inp:String = '';
 </script>
-<main>
+<main transition:fly={{ y: -200 }}>
     <div id="content">
         <div id="inputWrapper">
             <div class="title">Readlight</div>
             <div id="input">
-                <button></button>
-                <input type="search" autocomplete="off" spellcheck="false" role="combobox" aria-controls="matches" placeholder=" 도서 검색" aria-expanded="false" aria-live="polite">
+                <button on:click={()=> 
+                
+                    goto('/selectbook')
+                }></button>
+                <input type="search" 
+                    autocomplete="off" 
+                    spellcheck="false" 
+                    role="combobox" 
+                    aria-controls="matches" 
+                    placeholder=" 도서 검색" 
+                    aria-expanded="false" 
+                    aria-live="polite" 
+                    bind:value={inp}>
             </div>
         </div>
     </div>

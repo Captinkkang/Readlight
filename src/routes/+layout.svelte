@@ -1,15 +1,10 @@
 <script lang="ts">
     let clickmenu = 0;
-    import { tweened } from 'svelte/motion';
-	import { cubicOut } from 'svelte/easing';
     import Sidebar from "$lib/sidebar.svelte"
     import { goto } from '$app/navigation';
+    import { fade, fly} from 'svelte/transition';
+    import { isMenuOpen } from "$lib/stroe";
     
-
-	const progress = tweened(0, {
-		duration: 400,
-		easing: cubicOut
-	});
 </script>
 {#if clickmenu%2 === 1}
     <div class="behind"></div>
@@ -17,13 +12,9 @@
     <div id="top_bar">
         <div class="site_name">Readlight</div>
         <div class="button-wrapper">
-            <button class="home" on:click={() => goto('/main-page')}></button>
-            {#if clickmenu%2 !== 1}
-                <button class="menu" on:click={() => clickmenu++}></button>
-            {/if}
-            {#if clickmenu%2 === 1}
-                <Sidebar on:exit={() => clickmenu++}/>
-            {/if}
+            <button class="home" on:click={() => goto('/')}></button>
+            <button class="menu" on:click={() => $isMenuOpen = true}></button> 
+            <Sidebar />
         </div>
     </div>
     <slot />
@@ -43,11 +34,10 @@
         height: 40px;
     }
 
-    .side_bar {
-        background-color: #536E8E;
-        width: 25vw;
-        height: calc(100vh - 100px);
+    .side-bar{
+        display:contents;
     }
+    
     .content {
         background-color: #D9D9D9;
         height: 5vw;
@@ -69,7 +59,7 @@
         
         border:none;
         background-color: inherit;
-        transition: 0.5s;
+        transition:background 0.5s;
     }
     .menu:hover {
         cursor: pointer;
@@ -90,7 +80,7 @@
         background-position: 10px, 1px;
         background-size: auto;
         width: 60px;
-        transition: 0.5s;
+        transition: background 0.5s;
     }
     .home:hover {
         cursor: pointer;

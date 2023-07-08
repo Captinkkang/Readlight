@@ -1,39 +1,48 @@
 <script lang="ts">
-    //let bookList = fetch('/static/search.json')
-    //console.log(bookList, 'booklist')
+    import { goto } from "$app/navigation";
+    import { onMount } from "svelte";
+    const url = '/search.json';
+    //console.log(booklist, 'booklist')
     interface Ibooks{
-        bookthumnail:string;
-        booktitle:string;
-        bookpublisher:string;
-        bookwriter:string;
+        title:string;
+        publish:string;
+        writer:string;
+        thumnail:string;
     }
     //console.log(bookList, bookList)
     let arr:Ibooks[] = []
-    /*for(let i=0; i < books.length; i++){
-        arr.push()
-        
-    }*/
+    onMount(async () => {
+        const res = await fetch(url);
+        const json = await res.json();
+        arr = json
+    })
 </script>
 <main>
     <div class="input-wrapper">
+        <div></div>
         <div id="input">
             <button></button>
             <input type="search" autocomplete="off" spellcheck="false" role="combobox" aria-controls="matches" placeholder=" 도서 검색" aria-expanded="false" aria-live="polite">
         </div>
     </div>
-    <div class="book-container">
-        <div>찾을 책을 선택해 주세요</div>
-        {#each arr as {bookthumnail, booktitle, bookpublisher, bookwriter}}
-            <div class="books">
-                <img class="book-image" src="{bookthumnail}">
-                <div class="book-inform">
-                    <div>제목: {booktitle}</div>
-                    <div>지은이: {bookwriter}</div>
-                    <div>출판사: {bookpublisher}</div>
-                </div>
+    <div class="flex-book">
+        <div class="book-container">
+            <div class="message">찾을 책을 선택해 주세요</div>
+            <div class="book-list">
+                {#each arr as {thumnail, title, publish, writer}}
+                    <div class="books" on:click={()=>goto('/selectregion')}>
+                        <img class="book-image" src="{thumnail}">
+                        <div class="book-inform">
+                            <div>제목: {title}</div>
+                            <div>지은이: {writer}</div>
+                            <div>출판사: {publish}</div>
+                        </div>
+                    </div>
+                {/each}
             </div>
-        {/each}
+        </div>
     </div>
+    
 </main>
 <style>
     main{
@@ -82,5 +91,45 @@
     .input-wrapper {
         display: flex;
         justify-content: space-between;
+        margin-right: -8px;
+    }
+
+    .book-container {
+        width: 90vw;
+        background-color: #D9D9D9;
+        filter: opacity(90%);
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        font-size: 24px;
+        width: 100%;
+        text-align: center;
+        font-weight: bolder;
+    }
+    .flex-book {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .book-list {
+        display: flex;
+        flex-direction: row;
+        margin-top: 10px;
+    }
+    .books {
+        margin-left: 20px;
+        width: 13vw;
+        height: 15vh;
+        background-color: black;
+        color: white;
+    }
+    .books:hover {
+        cursor: pointer;
+    }
+    .book-image {
+        width: 100%
     }
 </style>
