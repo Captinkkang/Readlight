@@ -4,7 +4,81 @@
     import { goto } from '$app/navigation';
     import { fade, fly} from 'svelte/transition';
     import { isMenuOpen } from "$lib/stroe";
-    
+    import IconButton from '@smui/icon-button';
+    import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar'
+    import { onMount } from "svelte";
+    let sign:HTMLDivElement;
+    import {
+        GoogleAuthProvider,
+        browserSessionPersistence,//브라우져 세션 방법
+        getAuth,
+        onAuthStateChanged,
+        setPersistence,
+        signInWithPopup//사인을 어떻게 하냐
+    } from 'firebase/auth'
+    import type { User } from 'firebase/auth'
+    import {
+        getApps, 
+        initializeApp, 
+        FirebaseError//에러나는 경우
+    } from 'firebase/app';
+    import type { FirebaseOptions } from "firebase/app";
+    import type { PageData } from "./$types";
+    export let data:PageData;
+    const firebaseConfig = data.firebaseConfig;
+    let curUser:User|null = null;
+    onMount(() =>{
+        if(getApps().length === 0){
+            //앱 배열정보가 0이면 앱을 하나 만들기
+            initializeApp(firebaseConfig);
+        }
+        const auth = getAuth();
+        //유저의 인증 정보 가져오기, 정확히는 인증 상태
+        const un = onAuthStateChanged(auth, user => {
+            //인증 상태가 바뀔때 마다 user를 curuser에 넣는다
+            curUser = user;
+        });
+        return un;
+        //원래는 리턴 방식이 함수임
+    })
+    const login = async (firebaseConfig:FirebaseOptions) => {
+        if(getApps().length === 0){
+            //앱 있는지 없는지 확인
+            initializeApp(firebaseConfig);
+        }
+        const provider = new GoogleAuthProvider();//프로바이더 만들기
+        const auth = getAuth();//어스 정보
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');//구글이 사용하는 정보들, 어디까지 받을껀지
+        try{//안쪽에서 오류나면 catch(error)~~부분으로
+            await setPersistence(auth, browserSessionPersistence);//로그인 정보를 어디다 저장할지
+            const result = await signInWithPopup(auth, provider);//프로바이더가 바뀔때마다 다르게 뜸
+            const credential = GoogleAuthProvider.credentialFromResult(result);//정보를 해석 매서드로 해석해서 알아냄
+            const token = credential?.accessToken;//토큰, 아이디를 의미, firebase에서 정보를 알 수가 있음
+            const user = result.user;//유저를 받는다
+            return { token , user};
+        } catch(error){
+            if(error instanceof FirebaseError){//파이어베이스 내에서 일어난 에러를 캐치, 나머지는 그냥 넘기기
+                const code = error.code;
+                const message = error.message;
+                // The email of the user's account used.
+                const email = error.customData?.email;
+                // The AuthCredential type that was used.
+                const credential = GoogleAuthProvider.credentialFromError(error);
+                console.log({
+                    code, message, email, credential
+                });
+            } else {
+                console.log(error);
+            }
+        }
+    }
+    const logout = async (firebaseConfig:FirebaseOptions) => {
+        if(getApps().length === 0){
+            initializeApp(firebaseConfig);
+        }
+        const auth = getAuth();
+        await auth.signOut();
+    }
 </script>
 {#if clickmenu%2 === 1}
     <div class="behind"></div>
@@ -12,8 +86,24 @@
     <div id="top_bar">
         <div class="site_name">Readlight</div>
         <div class="button-wrapper">
-            <button class="home" on:click={() => goto('/')}></button>
-            <button class="menu" on:click={() => $isMenuOpen = true}></button> 
+            <div style="display: flex; align-items: center;" 
+                on:mouseover={()=>{sign.style.display = "inline-block"}}
+                on:mouseleave={()=>{sign.style.display = "none"}}>
+                <IconButton class="material-icons"></IconButton>
+                <div class="show" bind:this={sign}>
+                    <div class="log-state">{curUser ? '로그인 중' : '비로그인 중'}</div>
+                    <div>
+                        <button on:click={()=>{login(firebaseConfig)}}>로그인</button>
+                        <button on:click={()=>{logout(firebaseConfig)}}>로그아웃</button>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <IconButton class="material-icons" on:click={() => goto('/')}>home</IconButton>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <IconButton class="material-icons" on:click={() => $isMenuOpen = true}>menu</IconButton>
+            </div>
             <Sidebar />
         </div>
     </div>
@@ -32,16 +122,7 @@
         background-color: #424242;
         width: 100vw;
         height: 40px;
-    }
-
-    .side-bar{
-        display:contents;
-    }
-    
-    .content {
-        background-color: #D9D9D9;
-        height: 5vw;
-        margin-bottom: 20px;
+        z-index: 3;
     }
 
     .site_name {
@@ -53,18 +134,6 @@
         align-items: center;
         font-size: 22px;
     }
-    .menu {
-        width: 60px;
-        background-image: url(/menu.svg);
-        
-        border:none;
-        background-color: inherit;
-        transition:background 0.5s;
-    }
-    .menu:hover {
-        cursor: pointer;
-        background-color: #eee;
-    }
 
     .behind {
         background-color: black;
@@ -72,23 +141,14 @@
         height: 100%;
         opacity: 0%;
     }
-    .home {
-        background-image: url(/home.svg);
-        border: none;
-        background-color: inherit;
-        background-repeat: no-repeat;
-        background-position: 10px, 1px;
-        background-size: auto;
-        width: 60px;
-        transition: background 0.5s;
-    }
-    .home:hover {
-        cursor: pointer;
-        background-color: #eee;
-
-    }
-
+    
     .button-wrapper {
         display: flex;
+    }
+    .show {
+        display: none;
+    }
+    .log-state {
+        color: white;
     }
 </style>

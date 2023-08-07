@@ -1,23 +1,19 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { onMount } from "svelte";
-    import IconButton from "@smui/icon-button";
-    const url = '/search.json';
-    //console.log(booklist, 'booklist')
+    const url = '/search.json'
     interface Ibooks{
         title:string;
         fulltitle:string;
-        coment:string
-        publish:string;
         writer:string;
+        publish:string;
         thumnail:string;
+        coment:string;
         view:number;
         favorite:number;
         number:number;
     }
-    //console.log(bookList, bookList)
-    let arr:Ibooks[] = []
-    let useful;
+    let arr: Ibooks[]
+    let loveit:number[] = [];
     onMount(async () => {
         const res = await fetch(url);
         const json = await res.json();
@@ -32,83 +28,69 @@
             arr[i].number = i+1
         }
     })
-    
-    let inp:String = ''
-    let test = false;
-    let loveit:number[] = [];
 </script>
+
 <main>
-    
-    <div class="flex-book">
-        <div class="book-container">
-            <div class="message">찾은 책을 선택해 주세요</div>
-            <div class="book-list">
-                {#each arr as {thumnail, title, publish, writer, coment, view, favorite, number}}
-                    <div class="book" on:contextmenu={(e)=>{
-                        e.preventDefault()
-                        view++
-                    }}>
-                        <div class="content" on:click={()=>{goto('/selectregion')}}>
-                            <div class="title"><span style="color: white;">.</span>{title}...</div>
-                            <div class="book-image">
-                                <img src="{thumnail}">
-                            </div>
-                            <div class="writer"><span style="color: white;">.</span>{writer} 저</div>
-                            <div class="coment"><span style="color: white;">.</span>-{coment}</div>
-                            <div class="publish">{publish}</div>
-                        </div>
-                        <div class="loveit">
-                            <span class="eye">
-                                <img src="./eye2.svg" alt="press F5">{view}
-                            </span>
-                            <span class="heart">
-                                <input type="checkbox" id="inp{number}" value="{number}" bind:group={loveit}>
-                                <label class="img" for="inp{number}"></label>{favorite}
-                            </span>
-                        </div>
+    <div class="con">
+        <div class="title">-출판 예정 도서</div>
+        <div class="books">
+            {#each arr as {thumnail, title, publish, writer, coment, view, favorite, number}}
+            <div class="book" on:contextmenu={(e)=>{
+                e.preventDefault()
+                view++
+            }}>
+                <div class="content">
+                    <div class="title"><span style="color: white;">.</span>{title}...</div>
+                    <div class="book-image">
+                        <img src="{thumnail}">
                     </div>
-                {/each}
+                    <div class="writer"><span style="color: white;">.</span>{writer} 저</div>
+                    <div class="coment"><span style="color: white;">.</span>-{coment}</div>
+                    <div class="publish">{publish}</div>
+                </div>
+                <div class="loveit">
+                    <span class="eye">
+                        <img src="./eye2.svg" alt="press F5">{view}
+                    </span>
+                    <span class="heart">
+                        <input type="checkbox" id="inp{number}" value="{number}" bind:group={loveit}>
+                        <label class="img" for="inp{number}"></label>{favorite}
+                    </span>
+                </div>
             </div>
+            {/each}
         </div>
     </div>
-    
 </main>
+
 <style>
-    main{
+    main {
         height: calc(100vh - 100px);
         background-image: url("https://a-static.besthdwallpaper.com/hogwarts-library-wallpaper-1280x800-81797_3.jpg");
         background-size: cover;
         background-position: bottom;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        align-items: center;
     }
-    .book-container {
+    .con {
         width: 90vw;
         /*background-color: #D9D9D9;
         filter: opacity(90%);*/
         background-color: rgba(217, 217, 217, 0.9);
-        height: 85vh;
+        height: 62vh;
         margin-top: 5px;
         display: flex;
         flex-direction: column;
-    }
-
-    .message {
-        font-size: 24px;
-        width: 100%;
-        text-align: center;
-        font-weight: bolder;
-    }
-    .flex-book {
-        display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
     }
-    .book-list {
+    .books {
         display: flex;
         flex-direction: row;
-        margin-top: 10px;
+        width: 100%;
     }
+
     .book {
         margin-left: 20px;
         width: 13vw;

@@ -1,19 +1,25 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { fly } from "svelte/transition"
+    import IconButton from '@smui/icon-button';
+    import Button from '@smui/icon-button';
     //background-image: url("https://a-static.besthdwallpaper.com/hogwarts-library-wallpaper-1280x800-81797_3.jpg");
     let inp:String = '';
+    const movenext = () => {
+        if(inp !== '')goto('/selectbook')
+    }
 </script>
 <main transition:fly={{ y: -200 }}>
     <div id="content">
         <div id="inputWrapper">
             <div class="title">Readlight</div>
             <div id="input">
-                <button on:click={()=> 
-                
-                    goto('/selectbook')
-                }></button>
-                <input type="search" 
+                <div style="display: flex; align-items: center;" class="button">
+                    <IconButton class="material-icons" on:click={() => movenext()}
+                      >search</IconButton
+                    >
+                </div>
+                <input type="text" 
                     autocomplete="off" 
                     spellcheck="false" 
                     role="combobox" 
@@ -21,7 +27,8 @@
                     placeholder=" 도서 검색" 
                     aria-expanded="false" 
                     aria-live="polite" 
-                    bind:value={inp}>
+                    bind:value={inp}
+                    on:keydown={(e)=> {if(e.key === 'Enter'){movenext()}}}>
             </div>
         </div>
     </div>
@@ -47,6 +54,7 @@
         justify-content: center;
         flex-wrap: wrap;
         padding-bottom: 50px;
+        
     }
     #input {
         position: relative;
@@ -61,6 +69,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        box-shadow: inset 2px -2px 3px;
     }
     #input > input{
         background-color: inherit;
@@ -81,7 +90,9 @@
         /* height: ; */
     }
     
-    button {
+    .button {
+        color: white;
+        margin-right: 25px;
         box-sizing: border-box;
         border:none;
         height: 100%;
@@ -89,6 +100,5 @@
         background-color: inherit;
         background-size: 120%;
         background-position: center;
-        background-image: url("/search.svg");
     }
 </style>
