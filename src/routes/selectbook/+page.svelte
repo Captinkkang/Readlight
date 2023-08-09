@@ -33,9 +33,9 @@
         }
     })
     
-    let inp:String = ''
-    let test = false;
-    let loveit:number[] = [];
+    let heart:HTMLImageElement;
+    let likes = [];
+    let hclick = 0;
 </script>
 <main>
     
@@ -61,10 +61,28 @@
                             <span class="eye">
                                 <img src="./eye2.svg" alt="press F5">{view}
                             </span>
-                            <span class="heart">
-                                <input type="checkbox" id="inp{number}" value="{number}" bind:group={loveit}>
-                                <label class="img" for="inp{number}"></label>{favorite}
-                            </span>
+                            <div class="heart" on:click={()=>{
+                                let res = favorite;
+
+                                //로그인 한 상태 일꺼임
+                                //하트를 누른다
+
+                                //db에 있는 책 테이블/좋아요 명단에 내 아이디가 있다면
+                                //좋아요 수 1감소
+                                //하트가 비워짐
+
+                                //db에 있는 책 테이블/좋아요 명단에 내 아이디가 없다면
+                                //좋아요 수 1증가
+                                //하트가 채워짐
+                                
+                            }}>
+                                {#if favorite}
+                                    <img src="/heart.svg">
+                                {:else} 
+                                    <img src="/filled-heart.svg">
+                                {/if}
+                                {favorite}
+                            </div>
                         </div>
                     </div>
                 {/each}
@@ -144,7 +162,9 @@
         width: 15px;
         height: 15px;
     }
-    .heart > input{
+    .heart-image{
+        background-image: url("/heart.svg");
+        background-size: 15px 15px;
         width: 15px;
         height: 15px;
     }

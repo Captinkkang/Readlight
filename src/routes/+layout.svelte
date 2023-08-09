@@ -6,8 +6,9 @@
     import { isMenuOpen } from "$lib/stroe";
     import IconButton from '@smui/icon-button';
     import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar'
+    import Button from '@smui/button'
     import { onMount } from "svelte";
-    let sign:HTMLDivElement;
+    //아래는 로그인 관련 imprt&코드들
     import {
         GoogleAuthProvider,
         browserSessionPersistence,//브라우져 세션 방법
@@ -78,7 +79,9 @@
         }
         const auth = getAuth();
         await auth.signOut();
-    }
+        }
+
+    let sign:HTMLDivElement;
 </script>
 {#if clickmenu%2 === 1}
     <div class="behind"></div>
@@ -89,11 +92,18 @@
             <div style="display: flex; align-items: center;" 
                 on:mouseover={()=>{sign.style.display = "inline-block"}}
                 on:mouseleave={()=>{sign.style.display = "none"}}>
-                <IconButton class="material-icons"></IconButton>
+                <IconButton class="material-icons">account_circle</IconButton>
                 <div class="show" bind:this={sign}>
                     <div class="log-state">{curUser ? '로그인 중' : '비로그인 중'}</div>
                     <div>
-                        <button on:click={()=>{login(firebaseConfig)}}>로그인</button>
+                        <button on:click={async ()=>{
+                            login(firebaseConfig)
+                            let auth = getAuth();
+                            let user = auth.currentUser;
+                            let mail = user?.email
+                            let islogin = true
+
+                        }}>로그인</button>
                         <button on:click={()=>{logout(firebaseConfig)}}>로그아웃</button>
                     </div>
                 </div>
@@ -146,7 +156,10 @@
         display: flex;
     }
     .show {
+        background-color: gray;
         display: none;
+        position: absolute;
+        top: 60px;
     }
     .log-state {
         color: white;
