@@ -164,4 +164,24 @@
     .log-state {
         color: white;
     }
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: lavenderblush;
+        border-radius: 10px;
+        background-clip: padding-box;
+        border: 2px solid transparent;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: lavender;
+    }
+    ::-webkit-scrollbar-thumb:active {
+        background-color: lightsteelblue;
+    }
+    ::-webkit-scrollbar-track {
+        background-color: grey;
+        border-radius: 10px;
+        box-shadow: inset 0px 0px 5px white;
+    }
 </style>

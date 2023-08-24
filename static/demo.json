@@ -1,0 +1,142 @@
+{
+    "response": {
+        "request": {
+            "keyword": "췌장",
+            "pageNo": 1,
+            "pageSize": 10
+        },
+        "numFound": 13,
+        "docs": [
+            {
+                "doc": {
+                    "bookname": "너의 췌장을 먹고 싶어 ",
+                    "authors": "스미노 요루 지음 ;양윤옥 옮김",
+                    "publisher": "소미미디어",
+                    "publication_year": "2017",
+                    "isbn13": "9791157107223",
+                    "vol": "",
+                    "bookImageURL": "http://image.aladin.co.kr/product/10599/62/cover/k762530636_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=3424071",
+                    "loan_count": "42471"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "너의 췌장을 먹고 싶어 ",
+                    "authors": "스미노 요루 지음 ;양윤옥 옮김",
+                    "publisher": "소미미디어",
+                    "publication_year": "2017",
+                    "isbn13": "9791157108718",
+                    "vol": "",
+                    "bookImageURL": "http://image.aladin.co.kr/product/10599/56/cover/k522530636_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=3424070",
+                    "loan_count": "16309"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "(새로 만든) 내몸 사용설명서 ",
+                    "authors": "마이클 로이젠,유태우 옮김",
+                    "publisher": "김영사",
+                    "publication_year": "2014",
+                    "isbn13": "9788934966371",
+                    "vol": "",
+                    "bookImageURL": "http://image.aladin.co.kr/product/3654/71/cover/8934966378_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=2010873",
+                    "loan_count": "11194"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "당뇨병엔 밥 먹지 마라",
+                    "authors": "에베 코지 지음;이근아 옮김",
+                    "publisher": "이아소",
+                    "publication_year": "2005",
+                    "isbn13": "9788995553862",
+                    "vol": "",
+                    "bookImageURL": "http://image.aladin.co.kr/product/56/73/cover/8995553863_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=854837",
+                    "loan_count": "5641"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "병 안 걸리는 장 건강법 :하루 5분, 매일 건강해지는 습관! ",
+                    "authors": "신야 히로미,나지윤 옮김",
+                    "publisher": "살림출판사",
+                    "publication_year": "2010",
+                    "isbn13": "9788952214607",
+                    "vol": "",
+                    "bookImageURL": "http://image.aladin.co.kr/product/721/38/cover/8952214609_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=1073783",
+                    "loan_count": "3291"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "좋은 지방이 내 몸을 살린다 :저탄수화물 고필수지방 음식치료 ",
+                    "authors": "이권세,채기원 지음",
+                    "publisher": "솔트앤씨드",
+                    "publication_year": "2017",
+                    "isbn13": "9791195372973",
+                    "vol": "",
+                    "bookImageURL": "http://image.aladin.co.kr/product/10054/75/cover/k772536776_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=3407114",
+                    "loan_count": "3080"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "당뇨병을 이긴 사람들의 비밀 ",
+                    "authors": "KBS <생로병사의 비밀> 제작팀 지음",
+                    "publisher": "헬스조선",
+                    "publication_year": "2021",
+                    "isbn13": "9791158463571",
+                    "vol": "",
+                    "bookImageURL": "https://image.aladin.co.kr/product/27427/44/cover/k872733275_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=6039140",
+                    "loan_count": "2191"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "인체-소화의 과정 :입, 식도, 위, 췌장, 쓸개, 장…, 놀라운 소화 기관의 메커니즘 ",
+                    "authors": "번역: 강금희,이세영",
+                    "publisher": "아이뉴턴",
+                    "publication_year": "2017",
+                    "isbn13": "9791161960203",
+                    "vol": "",
+                    "bookImageURL": "http://image.aladin.co.kr/product/12597/75/cover/k492532872_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=3675294",
+                    "loan_count": "1868"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "당뇨병 치료, 당뇨약에 기대지 마라 ",
+                    "authors": "선재광 지음",
+                    "publisher": "전나무숲",
+                    "publication_year": "2020",
+                    "isbn13": "9791188544400",
+                    "vol": "",
+                    "bookImageURL": "https://image.aladin.co.kr/product/22780/10/cover/k472636430_1.jpg",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=5586240",
+                    "loan_count": "1342"
+                }
+            },
+            {
+                "doc": {
+                    "bookname": "(그림으로 보는)우리의 몸",
+                    "authors": "스티브 파커 글;김재면 옮김",
+                    "publisher": "기린원",
+                    "publication_year": "1999",
+                    "isbn13": "9788943901646",
+                    "vol": "",
+                    "bookImageURL": "http://image.aladin.co.kr/product/22/1/cover/894390164x_1.gif",
+                    "bookDtlUrl": "https://data4library.kr/bookV?seq=2463873",
+                    "loan_count": "1324"
+                }
+            }
+        ]
+    }
+}

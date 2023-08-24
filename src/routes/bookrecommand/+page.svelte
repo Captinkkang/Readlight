@@ -34,7 +34,9 @@
     
     
     let loveit:number[] = [];
-    /**/
+    /*
+        장르별 분류가능
+    */
 </script>
 <main>
     <div class="con">

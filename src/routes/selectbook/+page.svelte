@@ -2,84 +2,117 @@
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
     import IconButton from "@smui/icon-button";
-    const url = '/search.json';
+    //const url = "/search.json";
     //console.log(booklist, 'booklist')
-    interface Ibooks{
-        title:string;
-        fulltitle:string;
-        coment:string
-        publish:string;
-        writer:string;
-        thumnail:string;
-        view:number;
-        favorite:number;
-        number:number;
+    interface Ibooks {
+        title: string;
+        fulltitle: string;
+        coment: string;
+        publish: string;
+        writer: string;
+        thumnail: string;
+        isbn13: string;
+        view: number;
+        favorite: number;
+        favorite_click: number;
+        number: number;
     }
     //console.log(bookList, bookList)
-    let arr:Ibooks[] = []
+    let arr: Ibooks[] = [];
     let useful;
     onMount(async () => {
-        const res = await fetch(url);
+        if (localStorage.getItem("selectbook")) {
+            //console.log(localStorage.getItem("selectbook"),'res')
+            let sentdata = localStorage.getItem("selectbook");
+            if (typeof sentdata !== "string") return;
+            let res = JSON.parse(sentdata);
+            arr = res;
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].title.length > 11) {
+                    arr[i].fulltitle = arr[i].title;
+                    arr[i].title = arr[i].title.slice(0, 11);
+                }
+            }
+            /*for (let i = 0; i < arr.length; i++) {
+                arr[i].number = i + 1;
+            }*/
+        }
+        /*const res = await fetch(url);
         const json = await res.json();
         arr = json
-        for(let i = 0; i < arr.length; i++){
-            if(arr[i].title.length > 11){
-                arr[i].fulltitle = arr[i].title
-                arr[i].title = arr[i].title.slice(0,11)
-            }
-        }
-        for(let i=0; i<arr.length; i++){
-            arr[i].number = i+1
-        }
-    })
-    
-    let heart:HTMLImageElement;
-    let likes = [];
-    let hclick = 0;
+        */
+    });
 </script>
+
 <main>
-    
     <div class="flex-book">
         <div class="book-container">
             <div class="message">찾은 책을 선택해 주세요</div>
             <div class="book-list">
-                {#each arr as {thumnail, title, publish, writer, coment, view, favorite, number}}
-                    <div class="book" on:contextmenu={(e)=>{
-                        e.preventDefault()
-                        view++
-                    }}>
-                        <div class="content" on:click={()=>{goto('/selectregion')}}>
-                            <div class="title"><span style="color: white;">.</span>{title}...</div>
-                            <div class="book-image">
-                                <img src="{thumnail}">
+                {#each arr as { thumnail, title, publish, writer, coment, view, favorite, favorite_click, number }}
+                    <div
+                        class="book"
+                        on:contextmenu={(e) => {
+                            e.preventDefault();
+                            view++;
+                        }}
+                    >
+                        <div
+                            class="content"
+                            on:click={() => {
+                                let sent = arr[number]
+                                console.log(sent,'sent?')
+                                localStorage.setItem("selectregion",JSON.stringify(sent))
+                                goto("/selectregion");
+                            }}
+                        >
+                            <div class="title">
+                                <span style="color: white;">.</span>{title}...
                             </div>
-                            <div class="writer"><span style="color: white;">.</span>{writer} 저</div>
-                            <div class="coment"><span style="color: white;">.</span>-{coment}</div>
+                            <div class="book-image">
+                                <img src={thumnail} />
+                            </div>
+                            <div class="writer">
+                                <span style="color: white;">.</span>{writer} 저
+                            </div>
+                            <div class="coment">
+                                <span style="color: white;">.</span>-{coment}
+                            </div>
                             <div class="publish">{publish}</div>
                         </div>
                         <div class="loveit">
                             <span class="eye">
-                                <img src="./eye2.svg" alt="press F5">{view}
+                                <img src="./eye2.svg" alt="press F5" />{view}
                             </span>
-                            <div class="heart" on:click={()=>{
-                                let res = favorite;
+                            <div
+                                class="heart"
+                                on:click={() => {
+                                    if (favorite_click === 0) {
+                                        favorite++;
+                                        favorite_click = 1;
+                                    } else {
+                                        favorite_click = 0;
+                                        favorite--;
+                                    }
+                                    //로그인 한 상태 일꺼임
+                                    //하트를 누른다
 
-                                //로그인 한 상태 일꺼임
-                                //하트를 누른다
+                                    //db에 있는 책 테이블/좋아요 명단에 내 아이디가 있다면
+                                    //좋아요 수 1감소
+                                    //하트가 비워짐
 
-                                //db에 있는 책 테이블/좋아요 명단에 내 아이디가 있다면
-                                //좋아요 수 1감소
-                                //하트가 비워짐
+                                    //db에 있는 책 테이블/좋아요 명단에 내 아이디가 없다면
+                                    //좋아요 수 1증가
+                                    //하트가 채워짐
 
-                                //db에 있는 책 테이블/좋아요 명단에 내 아이디가 없다면
-                                //좋아요 수 1증가
-                                //하트가 채워짐
-                                
-                            }}>
-                                {#if favorite}
-                                    <img src="/heart.svg">
-                                {:else} 
-                                    <img src="/filled-heart.svg">
+                                    //->no db : 따로 책별로 변수를 만들어, heart, 처음에는 X false임, 누르면 true가 되고 true, false사용해 아래 #if이용
+                                    //ㄴㄱㅉㅇㅇ
+                                }}
+                            >
+                                {#if favorite_click === 0}
+                                    <img src="/heart.svg" />
+                                {:else}
+                                    <img src="/filled-heart.svg" />
                                 {/if}
                                 {favorite}
                             </div>
@@ -89,10 +122,10 @@
             </div>
         </div>
     </div>
-    
 </main>
+
 <style>
-    main{
+    main {
         height: calc(100vh - 100px);
         background-image: url("https://a-static.besthdwallpaper.com/hogwarts-library-wallpaper-1280x800-81797_3.jpg");
         background-size: cover;
@@ -109,6 +142,7 @@
         margin-top: 5px;
         display: flex;
         flex-direction: column;
+        overflow: auto;
     }
 
     .message {
@@ -125,7 +159,9 @@
     .book-list {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         margin-top: 10px;
+        
     }
     .book {
         margin-left: 20px;
@@ -162,9 +198,7 @@
         width: 15px;
         height: 15px;
     }
-    .heart-image{
-        background-image: url("/heart.svg");
-        background-size: 15px 15px;
+    .heart > img {
         width: 15px;
         height: 15px;
     }
@@ -174,12 +208,6 @@
         box-shadow: 1px 1px 5px 0px;
     }
     .book-image {
-        width: 100%
-    }
-    input[type="checkbox"] {
-        background-image: url("/Readlight/static/nonclickheart.svg");
-    }
-    input[type="checkbox"]:checked + label {
-        background-image: url("/Readlight/static/clickheart.svg");
+        width: 100%;
     }
 </style>

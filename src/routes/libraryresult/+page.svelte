@@ -6,6 +6,7 @@
 
     interface Ilibrary {
         name: string;
+        closeday: string;
         weekopen: number;
         weekclose: number;
         endopen: number;
@@ -18,47 +19,14 @@
     }
     let container: HTMLDivElement;
     let arr: Ilibrary[] = [
-        {
-            name: "안산 중앙 도서관",
-            weekopen: 0,
-            weekclose: 24,
-            endopen: 0,
-            endclose: 24,
-            hompage: "https://naver.com",
-            post:"안산천남로245",
-            phone:"010-7392-1337",
-            latitude: 37.3044,
-            longitude: 126.8212,
-        },
-        {
-            name: "안산미디어라이브러리",
-            weekopen: 0,
-            weekclose: 0,
-            endopen: 24,
-            endclose: 24,
-            hompage: `https://google.com`,
-            post:"안산천남로245",
-            phone:"010-7392-1337",
-            latitude: 37.307218997374,
-            longitude: 126.83132540949,
-        },
+        
     ];
     let brr: Ilibrary[] = [
-        {
-            name: "안산 관산 도서관",
-            weekopen: 0,
-            weekclose: 24,
-            endopen: 0,
-            endclose: 24,
-            hompage: "https://daum.com",
-            post:"안산천남로245",
-            phone:"010-7392-1337",
-            latitude: 37.332043787469,
-            longitude: 126.79959076287,
-        },
+        
     ];
     let yinform: Ilibrary = {
         name: "",
+        closeday: '매주일요일',
         latitude: 37.526359155559,
         longitude: 126.93352258617,
         weekopen: 0,
@@ -72,8 +40,10 @@
     let info = yinform;
     //let ninform
     let map: kakao.maps.Map;
+    let marker: kakao.maps.Marker;
+    let marker_position = new kakao.maps.LatLng(info.latitude, info.longitude)
     onMount(() => {
-        console.log(container)
+        //console.log(container)
         map = new kakao.maps.Map(container, {
             center: new kakao.maps.LatLng(
                 info.latitude,
@@ -81,6 +51,22 @@
             ),
             level: 3,
         });
+        marker = new kakao.maps.Marker({
+            position: marker_position
+        })
+        marker.setMap(map)
+        if(localStorage.getItem("libraryresult")){
+            let sentdata = localStorage.getItem("libraryresult")
+            if (typeof sentdata !== "string") return;
+            let data = JSON.parse(sentdata);
+            //for문 돌려서 다 분류함, 대출 가능, 불가능으로 
+            for(let i=0; i < data.length; i++){
+                if(data[i].loanAvailable === 'Y'){
+                    arr.push(data[i].inform)
+                }else brr.push(data[i].inform)
+                
+            }
+        }
     })
 </script>
 
@@ -95,7 +81,12 @@
                         class="button-shaped-round"
                         style="border-radious: 20px;"
                         on:click={() => {
+                            if(marker)marker.setMap(null)
                             info = i
+                            marker = new kakao.maps.Marker({
+                                position: new kakao.maps.LatLng(info.latitude, info.longitude) 
+                            })
+                            marker.setMap(map)
                             map.setCenter(new kakao.maps.LatLng(info.latitude, info.longitude));
                             map.relayout();
                         }}>{i.name}</Button
@@ -125,6 +116,7 @@
             <div class="name">{info.name} <span class="blue" on:click={()=>{goto(info.hompage)}}></span></div>
             <div>{info.post}</div>
             <div class="phone">{info.phone}</div>
+            <div>휴관일: <span>{info.closeday}</span></div>
             <div>평일 운영 시간: <span>{info.weekopen}~{info.weekclose}</span></div>
             <div>휴일 운영 시간: <span>{info.endopen}~{info.endclose}</span></div>
         </div>
