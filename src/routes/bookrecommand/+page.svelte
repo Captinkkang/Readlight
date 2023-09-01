@@ -16,9 +16,48 @@
     let arr:Ibooks[] = [];
     let brr:Ibooks[] = [];
     onMount(async () => {
-        const res = await fetch(url);
-        const json = await res.json();
-        arr = json
+        const lastd = [
+            {month:31},
+            {month:28},
+            {month:31},
+            {month:30},
+            {month:31},
+            {month:30},
+            {month:31},
+            {month:31},
+            {month:30},
+            {month:31},
+            {month:30},
+            {month:31}
+        ]
+        const now = new Date();
+        const year = now.getFullYear();
+        let mon = now.getMonth()+1;
+        let da = now.getDate();
+        let month;
+        let day;
+
+        if(mon < 10)month = `0${mon}`
+        else month = mon
+        if(da < 10)day = `0${da}`
+        else day = da
+        let date = `${year}${month}${day}`
+
+        
+        let agoyear = year;
+        let ago = `${agoyear}0101`
+        
+        console.log(date,'date',ago,'ago')
+        //console.log(`https://nl.go.kr/NL/search/openApi/saseoApi.do?key=1a989b495091570378f11846a9682ab26a127dfcf568d75db8e0ab718ab671ff&startRowNumApi=1&endRowNumApi=10&start_date=20200101&end_date=${date}`,"???")
+        const res = await fetch(`/bookrecommand/api?ago=${ago}&date=${date}`);
+        //const res = await fetch(`https://nl.go.kr/NL/search/openApi/saseoApi.do?key=1a989b495091570378f11846a9682ab26a127dfcf568d75db8e0ab718ab671ff&startRowNumApi=1&endRowNumApi=10&start_date=${ago}&end_date=${date}`) 
+        //일주일 전~지금
+        //일주일 전=>day-7, day<7{month-1, month last day-(|day-7|)}
+        //--->년도만 올해로 바꾸면 됨
+        const json = await res.text();
+        console.log(res, json)
+        //console.log(JSON.stringify(json),'라라라라라라ㅏㄹ')
+        //arr = json
         for(let i = 0; i < arr.length; i++){
             if(arr[i].title.length > 11){
                 arr[i].fulltitle = arr[i].title
@@ -54,7 +93,7 @@
                         <div class="content">
                             <div class="title"><span style="color: white;">.</span>{title}...</div>
                             <div class="book-image">
-                                <img src="{thumnail}">
+                                <img src="{thumnail}" alt="press F5">
                             </div>
                             <div class="writer"><span style="color: white;">.</span>{writer} 저</div>
                             <div class="coment"><span style="color: white;">.</span>-{coment}</div>
@@ -87,7 +126,7 @@
                     <div class="content">
                         <div class="title"><span style="color: white;">.</span>{title}...</div>
                         <div class="book-image">
-                            <img src="{thumnail}">
+                            <img src="{thumnail}" alt="press F5">
                         </div>
                         <div class="writer"><span style="color: white;">.</span>{writer} 저</div>
                         <div class="coment"><span style="color: white;">.</span>-{coment}</div>

@@ -51,6 +51,7 @@
             ),
             level: 3,
         });
+        console.log(map)
         marker = new kakao.maps.Marker({
             position: marker_position
         })
@@ -64,8 +65,25 @@
                 if(data[i].loanAvailable === 'Y'){
                     arr.push(data[i].inform)
                 }else brr.push(data[i].inform)
-                
             }
+            /*for(let i=0; i < arr.length; i++){
+                for(let j=1; i< arr.length; j++){
+                    console.log(arr[i].name, 'iname')
+                    console.log(arr[j].name, 'jname')
+                    /*if(arr[i].name === arr[j].name){
+                        arr.splice(j,1)
+                    }
+                }
+            }
+            for(let i=0; i<brr.length; i++){
+                for(let j=1; j < brr.length; j++){
+                    console.log(brr[i].name, 'iname')
+                    console.log(brr[j].name, 'jname')
+                    /*if(brr[i].name === brr[j].name){
+                        brr.splice(j,1)
+                    }
+                }
+            }*/
         }
     })
 </script>
@@ -162,15 +180,9 @@
     }
     .libraries {
         display: flex;
-        justify-content: space-evenly;
+        flex-wrap: wrap;
         overflow: auto;
-    }
-    .library {
-        width: 150px;
-        color: white;
-    }
-    .library:hover {
-        cursor: pointer;
+        justify-content: space-between;
     }
 
     .yes {

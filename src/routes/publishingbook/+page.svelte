@@ -1,66 +1,75 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    const url = '/search.json'
+    const url = '/publishingbook/api'
     interface Ibooks{
         title:string;
         fulltitle:string;
         writer:string;
         publish:string;
         thumnail:string;
-        coment:string;
-        view:number;
-        favorite:number;
-        number:number;
+        price:string;
     }
-    let arr: Ibooks[]
+    let arr: Ibooks[] = []
     let loveit:number[] = [];
+    let ready = false;
     onMount(async () => {
-        const res = await fetch(url);
+        let res = await fetch(url);
+        //console.log(await res.json(),'res')
         const json = await res.json();
-        arr = json
-        for(let i = 0; i < arr.length; i++){
+        //console.log(JSON.stringify(json),'docs')
+        
+        for(let i=0; i<json.docs.length; i++){
+            let insert = {
+                title: json.docs[i].TITLE,
+                fulltitle:"",
+                writer: json.docs[i].AUTHOR,
+                publish: json.docs[i].PUBLISHER,
+                thumnail: json.docs[i].TITLE_URL,
+                price: json.docs[i].PRE_PRICE
+            }
+            arr.push(insert)
+        }
+        //console.log(arr)
+        ready = true
+        /*for(let i = 0; i < arr.length; i++){
             if(arr[i].title.length > 11){
                 arr[i].fulltitle = arr[i].title
                 arr[i].title = arr[i].title.slice(0,11)
             }
-        }
-        for(let i=0; i<arr.length; i++){
+        }*/
+        /*for(let i=0; i<arr.length; i++){
             arr[i].number = i+1
-        }
+        }*/
     })
 </script>
 
 <main>
-    <div class="con">
-        <div class="title">-출판 예정 도서</div>
-        <div class="books">
-            {#each arr as {thumnail, title, publish, writer, coment, view, favorite, number}}
-            <div class="book" on:contextmenu={(e)=>{
-                e.preventDefault()
-                view++
-            }}>
-                <div class="content">
-                    <div class="title"><span style="color: white;">.</span>{title}...</div>
-                    <div class="book-image">
-                        <img src="{thumnail}">
+    <div class="align-con">
+        {#if ready === true}
+            <div class="con">
+                <div class="title">출판 예정 도서</div>
+                <div class="books">
+                    {#each arr as {thumnail, title, publish, writer, price}}
+                    <div class="book" on:contextmenu={(e)=>{
+                        e.preventDefault()
+                        //view++
+                    }}>
+                        <div class="content">
+                            <div class="title"><span style="color: white;">.</span>{title}...</div>
+                            <div class="book-image">
+                                <img src="{thumnail}">
+                            </div>
+                            <div class="writer"><span style="color: white;">.</span>{writer} 저</div>
+                            <div class="coment"><span style="color: white;">.</span>-가격: {price}원</div>
+                            <div class="publish">{publish}</div>
+                        </div>
                     </div>
-                    <div class="writer"><span style="color: white;">.</span>{writer} 저</div>
-                    <div class="coment"><span style="color: white;">.</span>-{coment}</div>
-                    <div class="publish">{publish}</div>
-                </div>
-                <div class="loveit">
-                    <span class="eye">
-                        <img src="./eye2.svg" alt="press F5">{view}
-                    </span>
-                    <span class="heart">
-                        <input type="checkbox" id="inp{number}" value="{number}" bind:group={loveit}>
-                        <label class="img" for="inp{number}"></label>{favorite}
-                    </span>
+                    {/each}
                 </div>
             </div>
-            {/each}
-        </div>
+        {/if}
     </div>
+    
 </main>
 
 <style>
@@ -73,6 +82,10 @@
         flex-direction: row;
         align-items: center;
     }
+    .align-con {
+        display: flex;
+        align-items: center;
+    }
     .con {
         width: 90vw;
         /*background-color: #D9D9D9;
@@ -82,17 +95,20 @@
         margin-top: 5px;
         display: flex;
         flex-direction: column;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
+        overflow: auto;
     }
     .books {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         width: 100%;
     }
 
     .book {
         margin-left: 20px;
+        margin-top: 10px;
         width: 13vw;
         height: 58vh;
         background-color: white;
@@ -117,19 +133,6 @@
     .publish {
         text-align: right;
     }
-    .loveit {
-        background-color: lightgray;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-    }
-    .eye > img {
-        width: 15px;
-        height: 15px;
-    }
-    .heart > input{
-        width: 15px;
-        height: 15px;
-    }
     .book:hover {
         cursor: pointer;
         transform: scale(1.1);
@@ -137,11 +140,5 @@
     }
     .book-image {
         width: 100%
-    }
-    input[type="checkbox"] {
-        background-image: url("/Readlight/static/nonclickheart.svg");
-    }
-    input[type="checkbox"]:checked + label {
-        background-image: url("/Readlight/static/clickheart.svg");
     }
 </style>

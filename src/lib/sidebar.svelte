@@ -51,9 +51,6 @@
         align-items:end;
     }
     
-    .button-container > div{
-        margin-top: 10px;
-    }
     .side_content {
         
         position:fixed;
@@ -67,33 +64,5 @@
         z-index: 2;
     }
 
-    .menu {
-        background-color: #D9D9D9;
-        height: 5vw;
-        margin-top: 20px;
-        text-align: right;
-        font-size: 22px;
-        align-items: center;
-    }
 
-    button {
-        background-image: url(/Xmenu.svg);
-        width: 3vw;
-        height: 3vw;
-        margin-bottom: 20px;
-        margin-top: 10px;
-        background-color: inherit;
-        border: none;
-        border-radius: 25px;
-        background-position: 15px ,5px;
-        background-repeat: no-repeat;
-        transition:background 0.5s;
-    }
-    button:hover{
-        cursor: pointer;
-        background-color: #D9D9D9;
-    }
-    .material-icons {
-        background-image: url("/Xmenu.svg");
-    }
 </style>

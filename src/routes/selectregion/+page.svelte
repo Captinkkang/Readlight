@@ -121,13 +121,12 @@
                                 let res = await sentdata.json();
                                 //console.log(res.response.result.hasBook,'???res???')
                                 if (res.response.result.hasBook === 'Y') {
-                                    //console.log("킹아")
                                     for (let k = 0; k < libcode.length; k++) {
                                         let libinfo = await fetch(
                                             `/selectregion/server2?lib=${libcode[k][3]}`
                                         );
                                         let result = await libinfo.json();
-                                        console.log(JSON.stringify(result.response.body),'맞춤법ㄷㄷ')
+                                        //console.log(JSON.parse(result.response.body),'맞춤법ㄷㄷ')
                                         //if(!result.response.body.items[0])return
                                         let insert = {
                                             name: result.response.body.items[0].lbrryNm,

@@ -3,7 +3,7 @@
     import Sidebar from "$lib/sidebar.svelte"
     import { goto } from '$app/navigation';
     import { fade, fly} from 'svelte/transition';
-    import { isMenuOpen } from "$lib/stroe";
+    import { isMenuOpen, islogin } from "$lib/stroe";
     import IconButton from '@smui/icon-button';
     import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar'
     import Button from '@smui/button'
@@ -25,6 +25,7 @@
     } from 'firebase/app';
     import type { FirebaseOptions } from "firebase/app";
     import type { PageData } from "./$types";
+    import { json } from "@sveltejs/kit";
     export let data:PageData;
     const firebaseConfig = data.firebaseConfig;
     let curUser:User|null = null;
@@ -100,8 +101,12 @@
                             login(firebaseConfig)
                             let auth = getAuth();
                             let user = auth.currentUser;
-                            let mail = user?.email
-                            let islogin = true
+                            let mail = user?.email;
+                            let res = await fetch(`/DB?user=${user}&mail=${mail}`)
+                            let json = res.json()
+                            if(JSON.stringify(json) === "ok"){
+                                //islogin = true
+                            }
 
                         }}>로그인</button>
                         <button on:click={()=>{logout(firebaseConfig)}}>로그아웃</button>
