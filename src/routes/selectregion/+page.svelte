@@ -4,6 +4,7 @@
     import IconButton from "@smui/icon-button";
     import Button, { Label } from "@smui/button";
     import { json, text } from "@sveltejs/kit";
+    import { set_store_value } from "svelte/internal";
 
     interface Ibooks {
         title: string;
@@ -119,39 +120,85 @@
                                     `/selectregion/server?lib=${sum}&isbn=${isbn}`
                                 );
                                 let res = await sentdata.json();
-                                //console.log(res.response.result.hasBook,'???res???')
+                                //console.log(res.response,'???res???')
                                 if (res.response.result.hasBook === 'Y') {
                                     for (let k = 0; k < libcode.length; k++) {
+                                        console.log(libcode[k][3],res.response.result.loanAvailable)
                                         let libinfo = await fetch(
                                             `/selectregion/server2?lib=${libcode[k][3]}`
                                         );
                                         let result = await libinfo.json();
-                                        //console.log(JSON.parse(result.response.body),'맞춤법ㄷㄷ')
-                                        //if(!result.response.body.items[0])return
-                                        let insert = {
-                                            name: result.response.body.items[0].lbrryNm,
-                                            closeday: result.response.body.items[0].closeDay,
-                                            weekopen: result.response.body.items[0].weekdayOperOpenHhmm,
-                                            weekclose: result.response.body.items[0].weekdayOperColseHhmm,
-                                            endopen: result.response.body.items[0].satOperOperOpenHhmm,
-                                            endclose: result.response.body.items[0].satOperCloseHhmm,
-                                            hompage: result.response.body.items[0].homapageUrl,
-                                            post: result.response.body.items[0].rdnmadr,
-                                            phone: result.response.body.items[0].phoneNumber,
-                                            latitude: result.response.body.items[0].latitude,
-                                            longitude: result.response.body.items[0].longitude
-                                        };
-                                        let lib = {
-                                            libCode: res.response.request.libCode,
-                                            loanAvailable: res.response.result.loanAvailable,
-                                            inform: insert
-                                        };
-                                        srr.push(lib);
+                                        console.log(JSON.stringify(result),'맞춤법ㄷㄷ')
+                                        if(result.response.header.resultCode !== "03"){
+                                            let insert = {
+                                                name: result.response.body.items[0].lbrryNm,
+                                                closeday: result.response.body.items[0].closeDay,
+                                                weekopen: result.response.body.items[0].weekdayOperOpenHhmm,
+                                                weekclose: result.response.body.items[0].weekdayOperColseHhmm,
+                                                endopen: result.response.body.items[0].satOperOperOpenHhmm,
+                                                endclose: result.response.body.items[0].satOperCloseHhmm,
+                                                hompage: result.response.body.items[0].homapageUrl,
+                                                post: result.response.body.items[0].rdnmadr,
+                                                phone: result.response.body.items[0].phoneNumber,
+                                                latitude: result.response.body.items[0].latitude,
+                                                longitude: result.response.body.items[0].longitude
+                                            };
+                                            let lib = {
+                                                libCode: res.response.request.libCode,
+                                                loanAvailable: res.response.result.loanAvailable,
+                                                inform: insert,
+                                                count:1
+                                            };
+                                            srr.push(lib);
+                                        }else {
+                                            let insert = {
+                                                name: libcode[k][3],
+                                                closeday: "00",
+                                                weekopen: "00",
+                                                weekclose: "00",
+                                                endopen: "00",
+                                                endclose: "00",
+                                                hompage: "",
+                                                post: "",
+                                                phone: "",
+                                                latitude: "",
+                                                longitude: ""
+                                            }
+                                            let lib = {
+                                                libCode: res.response.request.libCode,
+                                                loanAvailable: res.response.result.loanAvailable,
+                                                inform: insert,
+                                                count:1
+                                            }
+                                            srr.push(lib)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    let sent = [];
+                    if(srr.length < 0)alert("도서가 해당 지역의 도서관에 없습니다.")
+                    else {
+                        //console.log(srr)
+                        for(let i=0; i<srr.length; i++){
+                            //console.log(srr[i].inform,i)
+                            for(let k=1; k<srr.length; k++){
+                                //console.log(srr[k].inform,k)
+                                if(srr[i].inform.name === srr[k].inform.name){
+                                    srr.splice(k,1)
+                                    console.log(srr[i])
+                                    if(srr[i])srr[i].count++
+                                }
+                            }
+                        }
+                    }
+                    /*console.log(sent)
+                    for(let i=0; i<sent.length; i++){
+                        srr.splice(sent[i]-i,1)
+                    }*/
+                    
+                    console.log(srr,'srr!!!!!!!!')
                     localStorage.setItem("libraryresult",JSON.stringify(srr))
                     goto('/libraryresult')
                 } else alert("지역을 1개 이상 선택해 주세요.");

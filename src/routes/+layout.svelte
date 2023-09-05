@@ -5,7 +5,6 @@
     import { fade, fly} from 'svelte/transition';
     import { isMenuOpen, islogin } from "$lib/stroe";
     import IconButton from '@smui/icon-button';
-    import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar'
     import Button from '@smui/button'
     import { onMount } from "svelte";
     //아래는 로그인 관련 imprt&코드들
@@ -25,7 +24,6 @@
     } from 'firebase/app';
     import type { FirebaseOptions } from "firebase/app";
     import type { PageData } from "./$types";
-    import { json } from "@sveltejs/kit";
     export let data:PageData;
     const firebaseConfig = data.firebaseConfig;
     let curUser:User|null = null;

@@ -1,35 +1,21 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { goto } from "$app/navigation";
-    const url = '/search.json'
     interface Ibooks{
-        title:string;
+        subject:string|undefined;
+        title:string|undefined;
         fulltitle:string;
-        writer:string;
-        publish:string;
-        thumnail:string;
+        writer:string|undefined;
+        publish:string|undefined;
+        thumnail:string|undefined;
         coment:string;
         view:number;
         favorite:number;
         number:number;
     }
+    
     let arr:Ibooks[] = [];
     let brr:Ibooks[] = [];
     onMount(async () => {
-        const lastd = [
-            {month:31},
-            {month:28},
-            {month:31},
-            {month:30},
-            {month:31},
-            {month:30},
-            {month:31},
-            {month:31},
-            {month:30},
-            {month:31},
-            {month:30},
-            {month:31}
-        ]
         const now = new Date();
         const year = now.getFullYear();
         let mon = now.getMonth()+1;
@@ -45,24 +31,25 @@
 
         
         let agoyear = year;
-        let ago = `${agoyear}0101`
-        
-        console.log(date,'date',ago,'ago')
-        //console.log(`https://nl.go.kr/NL/search/openApi/saseoApi.do?key=1a989b495091570378f11846a9682ab26a127dfcf568d75db8e0ab718ab671ff&startRowNumApi=1&endRowNumApi=10&start_date=20200101&end_date=${date}`,"???")
-        const res = await fetch(`/bookrecommand/api?ago=${ago}&date=${date}`);
-        //const res = await fetch(`https://nl.go.kr/NL/search/openApi/saseoApi.do?key=1a989b495091570378f11846a9682ab26a127dfcf568d75db8e0ab718ab671ff&startRowNumApi=1&endRowNumApi=10&start_date=${ago}&end_date=${date}`) 
-        //일주일 전~지금
-        //일주일 전=>day-7, day<7{month-1, month last day-(|day-7|)}
-        //--->년도만 올해로 바꾸면 됨
-        const json = await res.text();
-        console.log(res, json)
-        //console.log(JSON.stringify(json),'라라라라라라ㅏㄹ')
-        //arr = json
-        for(let i = 0; i < arr.length; i++){
-            if(arr[i].title.length > 11){
-                arr[i].fulltitle = arr[i].title
-                arr[i].title = arr[i].title.slice(0,11)
+        const res = await fetch(`/bookrecommand/api?ago=${agoyear}&date=${date}`);
+        const text = await res.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, "text/xml")
+        let list = xml.querySelectorAll("list")
+        for(let i=0; i<list.length; i++){
+            let insert = {
+                subject: list[i].querySelector("item")?.querySelector("drCodeName")?.innerHTML,
+                title: list[i].querySelector("item")?.querySelector("recomtitle")?.innerHTML,
+                fulltitle: "",
+                writer: list[i].querySelector("item")?.querySelector("recomauthor")?.innerHTML,
+                publish: list[i].querySelector("item")?.querySelector("recompublisher")?.innerHTML,
+                thumnail: list[i].querySelector("item")?.querySelector("recomfilepath")?.innerHTML,
+                coment: "",
+                view: 0,
+                favorite: 0,
+                number: 0
             }
+            arr.push(insert)
         }
         for(let i=0; i<arr.length; i++){
             arr[i].number = i+1
@@ -75,6 +62,8 @@
     let loveit:number[] = [];
     /*
         장르별 분류가능
+        제목 11텍스트 이상 줄이기
+        도서 overflow처리
     */
 </script>
 <main>
@@ -223,10 +212,10 @@
     .book-image {
         width: 100%
     }
-    input[type="checkbox"] {
-        background-image: url("/Readlight/static/nonclickheart.svg");
+    /*input[type="checkbox"] {
+        background-image: url("/Readlight/static/heart.svg");
     }
     input[type="checkbox"]:checked + label {
-        background-image: url("/Readlight/static/clickheart.svg");
-    }
+        background-image: url("/Readlight/static/filledheart.svg");
+    }*/
 </style>
