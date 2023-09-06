@@ -84,6 +84,7 @@
     }
     .align-con {
         display: flex;
+        flex-direction: row;
         align-items: center;
     }
     .con {

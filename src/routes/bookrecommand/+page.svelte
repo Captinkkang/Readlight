@@ -54,7 +54,6 @@
         for(let i=0; i<arr.length; i++){
             arr[i].number = i+1
         }
-        brr = arr
     })
 
     
@@ -80,7 +79,7 @@
                         view++
                     }}>
                         <div class="content">
-                            <div class="title"><span style="color: white;">.</span>{title}...</div>
+                            <div class="title"><span style="color: white;">.</span>{title}</div>
                             <div class="book-image">
                                 <img src="{thumnail}" alt="press F5">
                             </div>
@@ -113,7 +112,7 @@
                     view++
                 }}>
                     <div class="content">
-                        <div class="title"><span style="color: white;">.</span>{title}...</div>
+                        <div class="title"><span style="color: white;">.</span>{title}</div>
                         <div class="book-image">
                             <img src="{thumnail}" alt="press F5">
                         </div>
@@ -154,7 +153,7 @@
         /*background-color: #D9D9D9;
         filter: opacity(90%);*/
         background-color: rgba(217, 217, 217, 0.9);
-        height: 62vh;
+        height: 65vh;
         margin-top: 5px;
         display: flex;
         flex-direction: column;
@@ -163,6 +162,8 @@
         display: flex;
         flex-direction: row;
         width: 100%;
+        flex-wrap: wrap;
+        overflow: auto;
     }
 
     .book {
@@ -186,7 +187,7 @@
         font-weight: 800;
     }
     .coment {
-        padding-bottom: 5vh;
+        padding-bottom: 3vh;
     }
     .publish {
         text-align: right;
