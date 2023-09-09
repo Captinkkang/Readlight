@@ -122,6 +122,10 @@
                                 let res = await sentdata.json();
                                 //console.log(res.response,'???res???')
                                 if (res.response.result.hasBook === 'Y') {
+                                    /*//아래는 시험 코드
+                                    let tex = `${libcode}`
+                                    let fet = await fetch(`/selectregion/server2?lib=${tex}`)
+                                    //위이는 시험 코드*/
                                     for (let k = 0; k < libcode.length; k++) {
                                         console.log(libcode[k][3],res.response.result.loanAvailable)
                                         let libinfo = await fetch(

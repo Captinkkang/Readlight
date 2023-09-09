@@ -1,46 +1,42 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
-    import IconButton from "@smui/icon-button";
-    //const url = "/search.json";
-    //console.log(booklist, 'booklist')
     interface Ibooks {
         title: string;
         fulltitle: string;
         coment: string;
         publish: string;
         writer: string;
+        fullwriter: string;
         thumnail: string;
         isbn13: string;
         view: number;
         favorite: number;
         favorite_click: number;
         number: number;
+        full: boolean;
+        full2: boolean;
     }
-    //console.log(bookList, bookList)
     let arr: Ibooks[] = [];
-    let useful;
     onMount(async () => {
         if (localStorage.getItem("selectbook")) {
-            //console.log(localStorage.getItem("selectbook"),'res')
             let sentdata = localStorage.getItem("selectbook");
             if (typeof sentdata !== "string") return;
             let res = JSON.parse(sentdata);
             arr = res;
             for (let i = 0; i < arr.length; i++) {
+                arr[i].fulltitle = arr[i].title;
                 if (arr[i].title.length > 11) {
-                    arr[i].fulltitle = arr[i].title;
                     arr[i].title = arr[i].title.slice(0, 11);
                 }
+                arr[i].full = false;
+                arr[i].fullwriter = arr[i].writer;
+                if (arr[i].writer.length > 11) {
+                    arr[i].writer = arr[i].writer.slice(0, 11);
+                }
+                arr[i].full2 = false;
             }
-            /*for (let i = 0; i < arr.length; i++) {
-                arr[i].number = i + 1;
-            }*/
         }
-        /*const res = await fetch(url);
-        const json = await res.json();
-        arr = json
-        */
     });
 </script>
 
@@ -49,7 +45,7 @@
         <div class="book-container">
             <div class="message">찾은 책을 선택해 주세요</div>
             <div class="book-list">
-                {#each arr as { thumnail, title, publish, writer, coment, view, favorite, favorite_click, number }}
+                {#each arr as { thumnail, title, fulltitle, publish, writer, fullwriter, coment, view, favorite, favorite_click, number, full, full2 }}
                     <div
                         class="book"
                         on:contextmenu={(e) => {
@@ -57,26 +53,72 @@
                             view++;
                         }}
                     >
-                        <div
-                            class="content"
-                            on:click={() => {
-                                let sent = arr[number]
-                                console.log(sent,'sent?')
-                                localStorage.setItem("selectregion",JSON.stringify(sent))
-                                goto("/selectregion");
-                            }}
-                        >
+                        <div class="content">
                             <div class="title">
-                                <span style="color: white;">.</span>{title}...
+                                <span style="color: white;">&nbsp;</span>
+                                {#if fulltitle !== title}
+                                    {#if full === false}
+                                        {title}
+                                        <span
+                                            class="change"
+                                            on:click={() => {
+                                                full = true;
+                                            }}>...</span
+                                        >
+                                    {:else}
+                                        {fulltitle}
+                                        <span
+                                            class="change"
+                                            on:click={() => {
+                                                full = false;
+                                            }}>&lt;</span
+                                        >
+                                    {/if}
+                                {:else}
+                                    {title}
+                                {/if}
                             </div>
-                            <div class="book-image">
+                            <div
+                                class="book-image"
+                                on:click={() => {
+                                    let sent = arr[number];
+                                    console.log(sent, "sent?");
+                                    localStorage.setItem(
+                                        "selectregion",
+                                        JSON.stringify(sent)
+                                    );
+                                    goto("/selectregion");
+                                }}
+                            >
                                 <img src={thumnail} />
                             </div>
                             <div class="writer">
-                                <span style="color: white;">.</span>{writer} 저
+                                <span style="color: white;">&nbsp;</span
+                                >{#if fullwriter !== writer}
+                                    {#if full2 === false}
+                                        {writer}
+                                        <span
+                                            class="change"
+                                            on:click={() => {
+                                                full2 = true;
+                                            }}>...</span
+                                        >
+                                    {:else}
+                                        {fullwriter}
+                                        <span
+                                            class="change"
+                                            on:click={() => {
+                                                full2 = false;
+                                            }}>&lt;</span
+                                        >
+                                    {/if}
+                                {:else}
+                                    {writer}
+                                {/if}
                             </div>
                             <div class="coment">
-                                <span style="color: white;">.</span>-{coment}
+                                <span style="color: white;">&nbsp;</span
+                                >-{coment}
                             </div>
                             <div class="publish">{publish}</div>
                         </div>
@@ -104,9 +146,6 @@
                                     //db에 있는 책 테이블/좋아요 명단에 내 아이디가 없다면
                                     //좋아요 수 1증가
                                     //하트가 채워짐
-
-                                    //->no db : 따로 책별로 변수를 만들어, heart, 처음에는 X false임, 누르면 true가 되고 true, false사용해 아래 #if이용
-                                    //ㄴㄱㅉㅇㅇ
                                 }}
                             >
                                 {#if favorite_click === 0}
@@ -135,8 +174,6 @@
     }
     .book-container {
         width: 90vw;
-        /*background-color: #D9D9D9;
-        filter: opacity(90%);*/
         background-color: rgba(217, 217, 217, 0.9);
         height: 85vh;
         margin-top: 5px;
@@ -161,7 +198,6 @@
         flex-direction: row;
         flex-wrap: wrap;
         margin-top: 10px;
-        
     }
     .book {
         margin-left: 20px;
@@ -184,7 +220,7 @@
         font-weight: 800;
     }
     .coment {
-        padding-bottom: 5vh;
+        padding-bottom: 2vh;
     }
     .publish {
         text-align: right;
@@ -204,10 +240,18 @@
     }
     .book:hover {
         cursor: pointer;
-        transform: scale(1.1);
+        transform: scale(1.05);
         box-shadow: 1px 1px 5px 0px;
     }
     .book-image {
         width: 100%;
+    }
+    .change {
+        transition: 1s;
+        color: rgba(46, 16, 0, 0.819);
+    }
+    .change:hover {
+        background-color: lavender;
+        border-radius: 45px;
     }
 </style>

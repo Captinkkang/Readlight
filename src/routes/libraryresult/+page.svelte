@@ -60,6 +60,10 @@
             let sentdata = localStorage.getItem("libraryresult")
             if (typeof sentdata !== "string") return;
             let data = JSON.parse(sentdata);
+            if(data.length <= 0){
+                alert("해당 지역에 도서를 소장한 도서관이 없습니다")
+                goto("/selectregion")
+            }
             //for문 돌려서 다 분류함, 대출 가능, 불가능으로 
             for(let i=0; i < data.length; i++){
                 if(data[i].loanAvailable === 'Y'){

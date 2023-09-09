@@ -2,9 +2,6 @@
     import { goto } from "$app/navigation";
     import { fly } from "svelte/transition";
     import IconButton from "@smui/icon-button";
-    import Button from "@smui/icon-button";
-    import { json } from "@sveltejs/kit";
-    //background-image: url("https://a-static.besthdwallpaper.com/hogwarts-library-wallpaper-1280x800-81797_3.jpg");
     let inp: String;
     const movenext = () => {
         if (inp !== "") goto("/selectbook");
@@ -22,7 +19,6 @@
                         on:click={async () => {
                         const fetchtemp = await fetch(`/server?keyword=${inp}`);
                         let res = await fetchtemp.json();
-                        //console.log(res,'resibal')
                         let arr = [];
                         for (let i = 0; i < res.response.docs.length; i++) {
                             let insert = {
@@ -36,7 +32,9 @@
                                 view: 0,
                                 favorite: 0,
                                 favorite_click: 0,
-                                number: i
+                                number: i,
+                                full: false,
+                                full2: false
                             };
                             arr.push(insert);
                         }
@@ -62,7 +60,6 @@
                         if (e.key !== "Enter") return;
                         const fetchtemp = await fetch(`/server?keyword=${inp}`);
                         let res = await fetchtemp.json();
-                        //console.log(res,'resibal')
                         let arr = [];
                         for (let i = 0; i < res.response.docs.length; i++) {
                             let insert = {
@@ -71,6 +68,7 @@
                                 publish: res.response.docs[i].doc.publisher,
                                 coment: "",
                                 writer: res.response.docs[i].doc.authors,
+                                fullwriter: "",
                                 thumnail: res.response.docs[i].doc.bookImageURL,
                                 isbn13: res.response.docs[i].doc.isbn13,
                                 view: 0,
