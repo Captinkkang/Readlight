@@ -7,20 +7,19 @@
     import IconButton from '@smui/icon-button';
     import Button from '@smui/button'
     import { onMount } from "svelte";
-    //아래는 로그인 관련 imprt&코드들
     import {
         GoogleAuthProvider,
-        browserSessionPersistence,//브라우져 세션 방법
+        browserSessionPersistence,
         getAuth,
         onAuthStateChanged,
         setPersistence,
-        signInWithPopup//사인을 어떻게 하냐
+        signInWithPopup
     } from 'firebase/auth'
     import type { User } from 'firebase/auth'
     import {
         getApps, 
         initializeApp, 
-        FirebaseError//에러나는 경우
+        FirebaseError
     } from 'firebase/app';
     import type { FirebaseOptions } from "firebase/app";
     import type { PageData } from "./$types";

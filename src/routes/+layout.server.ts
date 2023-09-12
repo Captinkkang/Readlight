@@ -13,7 +13,7 @@ export const load:LayoutServerLoad = async () => {
     }= env;
     return {
         firebaseConfig:{
-            apiKey,
+            apiKey: process.env.apiKey,
             authDomain,
             projectId,
             storageBucket,
