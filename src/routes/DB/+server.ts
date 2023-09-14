@@ -1,5 +1,5 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
-//import { MongoClient, ServerApiVersion } from 'mongodb'
+//const { MongoClient, ServerApiVersion } = require('mongodb');
+import { MongoClient, ServerApiVersion } from 'mongodb'
 import type { RequestHandler } from "./$types";
 const uri = "mongodb+srv://kite1337:kkang1128!@cluster0.9eixing.mongodb.net/?retryWrites=true&w=majority";
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -17,16 +17,11 @@ export const GET:RequestHandler = async ({url}) => {
 
   const db = client.db('readlight');
   const User = db.collection('user');
-  const id = User.find({_id:user})
-  if(!id){
-    User.insert({
-      "_id": user,
-      "mail": mail,
-      "islogin": true
-    })
-    answer = "new"
-  }else {answer = "old"}
-  return new Response(JSON.stringify(answer), {
+  User.insertOne({
+    "mail": mail,
+    "islogin": true
+  })
+  return new Response(JSON.stringify(User), {
     headers: {
         'Content-Type':'application/json'
     }
