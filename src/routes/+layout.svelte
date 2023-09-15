@@ -99,7 +99,7 @@
                             let auth = getAuth();
                             let user = auth.currentUser;
                             let mail = user?.email;
-                            let res = await fetch(`/DB?user=${user}&mail=${mail}`)
+                            let res = await fetch(`/DB?mail=${mail}`)
                             let json = res.json()
                             if(JSON.stringify(json) === "ok"){
                                 //islogin = true
