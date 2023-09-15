@@ -10,10 +10,8 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
-let answer;
 export const GET:RequestHandler = async ({url}) => {
   let mail = url.searchParams.get("mail");
-  let user = url.searchParams.get("user");
 
   const db = client.db('readlight');
   const User = db.collection('user');
