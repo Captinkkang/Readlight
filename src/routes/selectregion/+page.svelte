@@ -3,8 +3,6 @@
     import { onMount } from "svelte";
     import IconButton from "@smui/icon-button";
     import Button, { Label } from "@smui/button";
-    import { json, text } from "@sveltejs/kit";
-    import { set_store_value } from "svelte/internal";
 
     interface Ibooks {
         title: string;
@@ -108,6 +106,7 @@
                         drr.push(crr);
                     }
                     drr.shift();
+                    console.log(drr,'drr')
                     let srr = [];
                     for (let i = 0; i < drr.length; i++) {
                         for (let j = 0; j < checked.length; j++) {
