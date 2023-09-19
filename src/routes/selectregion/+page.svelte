@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import IconButton from "@smui/icon-button";
     import Button, { Label } from "@smui/button";
+    import { json } from "@sveltejs/kit";
 
     interface Ibooks {
         title: string;
@@ -90,8 +91,6 @@
             color="secondary"
             variant="raised"
             on:click={async () => {
-                //console.log('result',checked)
-                //console.log(book.isbn13, 'book')
                 if (checked.length > 0) {
                     const res = await fetch("/20201029_.csv");
                     const csv = await res.text();
@@ -106,26 +105,20 @@
                         drr.push(crr);
                     }
                     drr.shift();
-                    console.log(drr,'drr')
+                    //console.log(drr,'drr')
                     let srr = [];
+                    //책 있는 도서관 배열
+                    let hasbook = [];
                     for (let i = 0; i < drr.length; i++) {
                         for (let j = 0; j < checked.length; j++) {
                             if (drr[i][1] === checked[j]) {
                                 libcode.shift();
                                 libcode.push(drr[i]);
-                                let sum = Number(drr[i][4]);
-                                let isbn = Number(book.isbn13);
-                                let sentdata = await fetch(
-                                    `/selectregion/server?lib=${sum}&isbn=${isbn}`
-                                );
-                                let res = await sentdata.json();
+                                hasbook.push({"sum":Number(drr[i][4]), "isbn":Number(book.isbn13)})
+                                //let res = await sentdata.json();
                                 //console.log(res.response,'???res???')
-                                if (res.response.result.hasBook === 'Y') {
-                                    /*//아래는 시험 코드
-                                    let tex = `${libcode}`
-                                    let fet = await fetch(`/selectregion/server2?lib=${tex}`)
-                                    //위이는 시험 코드*/
-                                    for (let k = 0; k < libcode.length; k++) {
+                                //if (res.response.result.hasBook === 'Y') {
+                                    /*for (let k = 0; k < libcode.length; k++) {
                                         console.log(libcode[k][3],res.response.result.loanAvailable)
                                         let libinfo = await fetch(
                                             `/selectregion/server2?lib=${libcode[k][3]}`
@@ -175,13 +168,120 @@
                                             }
                                             srr.push(lib)
                                         }
-                                    }
-                                }
+                                    }*/
+                                //}
                             }
                         }
                     }
+                    
                     let sent = [];
-                    if(srr.length < 0)alert("도서가 해당 지역의 도서관에 없습니다.")
+                    //console.log(,'isbook.json')
+                    //console.log(JSON.parse(JSON.stringify(hasbook)),'hasbook')
+                    let isbook = await fetch(`/selectregion/server?lib=${JSON.stringify(hasbook)}`)
+                    let json = await isbook.json()
+                    //let lastres = await JSON.parse(json)
+                    //console.log(json[0].result)
+                    
+                    
+                    const CSV = await fetch("/librarydata.csv");
+                    const libdata = await CSV.text();
+                    let libarr = libdata.split("\n");
+                    let crr = [];
+                    //console.log(libarr)
+                    for(let i=0; i<libarr.length; i++){
+                        let brr = libarr[i].split(",")
+                        crr.push(brr)
+                    }
+                    //console.log(crr)
+                    //console.log(json)
+                    for(let i=0; i<crr.length; i++){
+                        //console.log(crr[i][0],crr[i][0].split(" "),crr[i][0].split(" ").join(""))
+                        crr[i][0] = crr[i][0].split(" ").join("");
+                    }
+                    //console.log(crr)
+                    let libname = [];
+                    //console.log(json.length, drr.length)
+                    for(let i=0; i<json.length; i++){
+                        for(let j=0; j<drr.length; j++){
+                            //console.log(json[i].request.libCode,drr[j][4])
+                            if(json[i].result.hasBook === 'Y'&&json[i].request.libCode === drr[j][4]){
+                                libname.push({name: drr[j][3], available: json[i].result.loanAvailable})
+                            }
+                        }
+                    }
+                    //console.log(libname)
+                    for(let i=0; i<libname.length; i++){
+                        for(let j=0; j<crr.length; j++){
+                            //console.log(libname[i].name, crr[j][0])
+                            if(libname[i].name === crr[j][0]){
+                                let insert = {
+                                    name: crr[j][0],
+                                    closeday: crr[j][4],
+                                    weekopen: crr[j][5],
+                                    weekclose: crr[j][6],
+                                    endopen: crr[j][9],
+                                    endclose: crr[j][10],
+                                    hompage: crr[j][22],
+                                    post: crr[j][17],
+                                    phone: crr[j][19],
+                                    latitude: crr[j][23],
+                                    longitude: crr[j][24]
+                                };
+                                let lib = {
+                                    loanAvailable: libname[i].available,
+                                    inform: insert,
+                                    count:1
+                                };
+                                sent.push(lib)
+                            }
+                        }
+                    }
+                    console.log(sent,"finish..?")
+                    for(let i=0; i<sent.length; i++){
+                        //sent중복검사
+                        for(let j=1; j<sent.length; j++){
+                            if(sent[i].inform.name === sent[j].inform.name){
+                                sent.splice(j,1)
+                                if(sent[i])sent[i].count++
+                            }
+                        }
+                    }
+                    console.log(sent)
+                    /*for(let i=0; i<sent.length; i++){
+                            for(let k=1; k<sent.length; k++){
+                                if(srr[i].inform.name === srr[k].inform.name){
+                                    srr.splice(k,1)
+                                    //console.log(srr[i])
+                                    if(srr[i])srr[i].count++
+                                }
+                            }
+                        }*/
+                    /*brr.splice(0, 2);
+                    for (let i = 0; i < brr.length; i++) {
+                        let crr = brr[i].split(",");
+                        crr.splice(5, 2);
+                        crr.splice(1, 1);
+                        crr[1] = crr[1] + crr[2];
+                        crr.splice(2, 1);
+                        drr.push(crr);
+                    }
+                    */
+                    //let info = await fetch(`/selectregion/server2?lib=${JSON.stringify(json)}`)
+                    //let infojs = JSON.parse(String(info))
+                    
+                    /*for(let i=0; i<infojs.length; i++){
+                        let lib = {
+                            libCode: json.response.request.libCode,
+                            loanAvailable: json.response.result.loanAvailable,
+                            inform: infojs[i],
+                            count:1
+                        };
+                        sent.push(lib)
+                    }*/
+                    
+
+                    
+                    /*if(srr.length < 0)alert("도서가 해당 지역의 도서관에 없습니다.")
                     else {
                         //console.log(srr)
                         for(let i=0; i<srr.length; i++){
@@ -199,10 +299,11 @@
                     /*console.log(sent)
                     for(let i=0; i<sent.length; i++){
                         srr.splice(sent[i]-i,1)
-                    }*/
-                    
-                    console.log(srr,'srr!!!!!!!!')
-                    localStorage.setItem("libraryresult",JSON.stringify(srr))
+                    }
+                
+                    console.log(srr,'srr!!!!!!!!')*/
+                    //console.log(JSON.stringify(sent))
+                    localStorage.setItem("libraryresult",JSON.stringify(sent))
                     goto('/libraryresult')
                 } else alert("지역을 1개 이상 선택해 주세요.");
             }}

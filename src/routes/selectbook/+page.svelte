@@ -82,7 +82,6 @@
                                 class="book-image"
                                 on:click={() => {
                                     let sent = arr[number];
-                                    console.log(sent, "sent?");
                                     localStorage.setItem(
                                         "selectregion",
                                         JSON.stringify(sent)
