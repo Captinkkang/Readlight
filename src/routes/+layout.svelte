@@ -3,7 +3,7 @@
     import Sidebar from "$lib/sidebar.svelte"
     import { goto } from '$app/navigation';
     import { fade, fly} from 'svelte/transition';
-    import { isMenuOpen, islogin } from "$lib/stroe";
+    import { isMenuOpen, islogin, my_id } from "$lib/stroe";
     import IconButton from '@smui/icon-button';
     import Button from '@smui/button'
     import { onMount } from "svelte";
@@ -99,14 +99,15 @@
                             let auth = getAuth();
                             let user = auth.currentUser;
                             let mail = user?.email;
-                            let res = await fetch(`/DB?mail=${mail}`)
-                            let json = res.json()
-                            if(JSON.stringify(json) === "ok"){
-                                //islogin = true
-                            }
-
+                            await fetch(`/DB/User?mail=${mail}`)
+                            if(typeof mail === "string")$my_id = mail
+                            $islogin = true
                         }}>로그인</button>
-                        <button on:click={()=>{logout(firebaseConfig)}}>로그아웃</button>
+                        <button on:click={()=>{
+                            logout(firebaseConfig)
+                            $islogin = false
+                            $my_id = ""
+                        }}>로그아웃</button>
                     </div>
                 </div>
             </div>

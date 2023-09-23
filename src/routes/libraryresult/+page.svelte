@@ -70,24 +70,6 @@
                     arr.push(data[i].inform)
                 }else brr.push(data[i].inform)
             }
-            /*for(let i=0; i < arr.length; i++){
-                for(let j=1; i< arr.length; j++){
-                    console.log(arr[i].name, 'iname')
-                    console.log(arr[j].name, 'jname')
-                    /*if(arr[i].name === arr[j].name){
-                        arr.splice(j,1)
-                    }
-                }
-            }
-            for(let i=0; i<brr.length; i++){
-                for(let j=1; j < brr.length; j++){
-                    console.log(brr[i].name, 'iname')
-                    console.log(brr[j].name, 'jname')
-                    /*if(brr[i].name === brr[j].name){
-                        brr.splice(j,1)
-                    }
-                }
-            }*/
         }
     })
 </script>
@@ -125,6 +107,10 @@
                         class="button-shaped-round"
                         on:click={() => {
                             info = i
+                            marker = new kakao.maps.Marker({
+                                position: new kakao.maps.LatLng(info.latitude, info.longitude) 
+                            })
+                            marker.setMap(map)
                             map.setCenter(new kakao.maps.LatLng(info.latitude, info.longitude));
                             map.relayout();
                         }}>{i.name}</Button

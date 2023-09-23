@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
+    import { islogin } from "$lib/stroe";
     interface Ibooks {
         title: string;
         fulltitle: string;
@@ -13,6 +14,7 @@
         view: number;
         favorite: number;
         favorite_click: number;
+        like_users: object;
         number: number;
         full: boolean;
         full2: boolean;
@@ -37,6 +39,13 @@
                 arr[i].full2 = false;
             }
         }
+        let barray = JSON.stringify(arr)
+        let res = await fetch(`/DB/Books?barray=${barray}`)
+        if(typeof res === "string"){ 
+            arr = JSON.parse(res).arra
+        }
+        let turn = await fetch(`/DB/favorite?barray=${arr}`)
+        //for문으로 각각 책에 자기 email있는지 확인하고 있으면 favorite_click=1 해야함
     });
 </script>
 
@@ -45,7 +54,7 @@
         <div class="book-container">
             <div class="message">찾은 책을 선택해 주세요</div>
             <div class="book-list">
-                {#each arr as { thumnail, title, fulltitle, publish, writer, fullwriter, coment, view, favorite, favorite_click, number, full, full2 }}
+                {#each arr as { thumnail, title, fulltitle, publish, writer, fullwriter, coment, view, favorite, favorite_click, like_users, number, full, full2, isbn13 }}
                     <div
                         class="book"
                         on:contextmenu={(e) => {
@@ -127,24 +136,39 @@
                             </span>
                             <div
                                 class="heart"
-                                on:click={() => {
-                                    if (favorite_click === 0) {
-                                        favorite++;
-                                        favorite_click = 1;
-                                    } else {
-                                        favorite_click = 0;
-                                        favorite--;
-                                    }
-                                    //로그인 한 상태 일꺼임
-                                    //하트를 누른다
-
-                                    //db에 있는 책 테이블/좋아요 명단에 내 아이디가 있다면
-                                    //좋아요 수 1감소
-                                    //하트가 비워짐
-
-                                    //db에 있는 책 테이블/좋아요 명단에 내 아이디가 없다면
-                                    //좋아요 수 1증가
-                                    //하트가 채워짐
+                                on:click={async () => {
+                                    let newh;
+                                    if(favorite_click === 1){
+                                        newh = favorite-1
+                                    }else newh = favorite
+                                    if($islogin === true){
+                                        if(newh === favorite){
+                                            favorite++
+                                            favorite_click = 1
+                                        }else {
+                                            favorite--
+                                            favorite_click = 0
+                                        }
+                                        let sent = {num:favorite_click, isbn:isbn13}
+                                        await fetch(`/DB/favorite?click=${JSON.stringify(sent)}`)
+                                        /*
+                                        if (favorite_click === 0) {
+                                            favorite++;
+                                            favorite_click = 1;
+                                        } else {
+                                            favorite_click = 0;
+                                            favorite--;
+                                        }*/
+                                    }else {alert("로그인 후 이용가능합니다.")}
+                                    
+                                    //로그인 true일때
+                                    //내가 이 책의 좋아요 유저 정보에 있는지 확인
+                                    //없다면 누를때 ++, 다시 누르면 --
+                                    //db에 이 책의 isbn등 정보를 Books 콜렉션에 하나 넣는다
+                                    
+                                    //이후 책을 불러올때 한번 db와 연결
+                                    //이 책과 같은 isbn을 가진 책이 db에 있으면
+                                    //해당 db데이터의 좋아요수와 조회수를 favorite, view에 각각 넣는다 
                                 }}
                             >
                                 {#if favorite_click === 0}
