@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 res[i].favorite = dbbook.likecount
                 res[i].like_users = dbbook.like_users
                 res[i].view = dbbook.view
-                for(let j=0; i<Object.keys(dbbook.like_users).length; j++){
+                for(let j=0; i<dbbook.like_users.length; j++){
                     if(dbbook.like_users[j] === my_id){
                         res[i].favorite_click = 1
                     }else res[i].favorite_click = 0

@@ -40,11 +40,11 @@
             }
         }
         let barray = JSON.stringify(arr)
-        let res = await fetch(`/DB/Books?barray=${barray}`)
+        console.log(arr)
+        let res = await fetch(`/DB/Books?barray=${JSON.stringify(arr)}`)
         if(typeof res === "string"){ 
-            arr = JSON.parse(res).arra
+            arr = JSON.parse(res)
         }
-        let turn = await fetch(`/DB/favorite?barray=${arr}`)
         //for문으로 각각 책에 자기 email있는지 확인하고 있으면 favorite_click=1 해야함
     });
 </script>

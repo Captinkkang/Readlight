@@ -176,7 +176,7 @@
                     
                     let sent = [];
                     //console.log(,'isbook.json')
-                    //console.log(JSON.parse(JSON.stringify(hasbook)),'hasbook')
+                    console.log(hasbook,'hasbook')
                     let isbook = await fetch(`/selectregion/server?lib=${JSON.stringify(hasbook)}`)
                     let json = await isbook.json()
                     //let lastres = await JSON.parse(json)
