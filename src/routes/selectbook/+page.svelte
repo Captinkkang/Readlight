@@ -2,6 +2,7 @@
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
     import { islogin } from "$lib/stroe";
+    import { json } from "@sveltejs/kit";
     interface Ibooks {
         title: string;
         fulltitle: string;
@@ -41,11 +42,18 @@
         }
         let barray = JSON.stringify(arr)
         console.log(arr)
-        let res = await fetch(`/DB/Books?barray=${JSON.stringify(arr)}`)
-        if(typeof res === "string"){ 
-            arr = JSON.parse(res)
+        let sent = [];
+        for(let i=0; i < arr.length; i++){
+            sent.push({likecount: arr[i].favorite, like_user: arr[i].favorite_click, view: arr[i].view, isbn: arr[i].isbn13})
         }
-        //for문으로 각각 책에 자기 email있는지 확인하고 있으면 favorite_click=1 해야함
+        let res = await fetch(`/DB/Books?barray=${JSON.stringify(sent)}`)
+        let ins = await res.json()
+        let result;
+        result = JSON.parse(ins)
+        /*for(let i=0; i<arr.length; i++){
+
+        }
+        //for문으로 각각 책에 자기 email있는지 확인하고 있으면 favorite_click=1 해야함==>서버에 이미 코드가 짜여 있는데 뭐지*/
     });
 </script>
 
