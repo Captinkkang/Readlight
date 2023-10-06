@@ -11,21 +11,26 @@ const client = new MongoClient(uri, {
   }
 });
 export const GET:RequestHandler = async ({url}) => {
-  let mail = url.searchParams.get("mail");
-  let me;
-  await client.connect();
-
-  const db = client.db('readlight');
-  const User = db.collection('user');
-  if(await User.findOne({mail: mail}) === null){
-    User.insertOne({
-      "mail": mail,
-      "islogin": true
-    })
+  let mail = url.searchParams.get("user");
+  let msg = 0
+  if(typeof mail === "string"){
+    await client.connect();
+    let obj = JSON.parse(mail)
+    const db = client.db('readlight');
+    const User = db.collection('user');
+    const find = await User.findOne({mail: obj.id})
+    if(find === null){
+      User.insertOne({
+        "mail": obj.id,
+        "pw": obj.pw
+      })
+      msg = 0
+    }else if(find.pw === obj.pw){
+      msg = 1
+    }
   }
-  
 
-  return new Response("ok", {
+  return new Response(JSON.stringify({answer:msg}), {
     headers: {
         'Content-Type':'application/json'
     }

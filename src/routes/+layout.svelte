@@ -13,7 +13,9 @@
         getAuth,
         onAuthStateChanged,
         setPersistence,
-        signInWithPopup
+        signInWithPopup,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword
     } from 'firebase/auth'
     import type { User } from 'firebase/auth'
     import {
@@ -45,30 +47,42 @@
             //앱 있는지 없는지 확인
             initializeApp(firebaseConfig);
         }
-        const provider = new GoogleAuthProvider();//프로바이더 만들기
-        const auth = getAuth();//어스 정보
-        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');//구글이 사용하는 정보들, 어디까지 받을껀지
-        try{//안쪽에서 오류나면 catch(error)~~부분으로
-            await setPersistence(auth, browserSessionPersistence);//로그인 정보를 어디다 저장할지
-            const result = await signInWithPopup(auth, provider);//프로바이더가 바뀔때마다 다르게 뜸
-            const credential = GoogleAuthProvider.credentialFromResult(result);//정보를 해석 매서드로 해석해서 알아냄
-            const token = credential?.accessToken;//토큰, 아이디를 의미, firebase에서 정보를 알 수가 있음
-            const user = result.user;//유저를 받는다
-            return { token , user};
-        } catch(error){
-            if(error instanceof FirebaseError){//파이어베이스 내에서 일어난 에러를 캐치, 나머지는 그냥 넘기기
-                const code = error.code;
-                const message = error.message;
-                // The email of the user's account used.
-                const email = error.customData?.email;
-                // The AuthCredential type that was used.
-                const credential = GoogleAuthProvider.credentialFromError(error);
-                console.log({
-                    code, message, email, credential
-                });
-            } else {
-                console.log(error);
-            }
+        let id = prompt("이메일를 입력해 주세요","aaaaa@aaaaaa.com")
+        let pw = prompt("6자리 비밀번호를 입력해 주세요")
+        let obj = JSON.stringify({id:id, pw:pw})
+        let check = await fetch(`/DB/User?user${obj}`)
+        let json = await check.json()
+        console.log(json, typeof id, typeof pw)
+        if(json.answer === 0&&id !== null&&pw !== null){
+            $my_id = id
+            const auth = getAuth();
+            createUserWithEmailAndPassword(auth, id, pw)
+            .then((userCredential) => {
+                const user = userCredential.user;
+            // ...
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage)
+                // ..
+            });
+        }else if(json.answer === 1&&id !== null&&pw !== null){
+            console.log("ok 0")
+            $my_id = id
+            const auth = getAuth();
+            signInWithEmailAndPassword(auth, id, pw)
+            .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                console.log(user)
+                // ...
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage)
+            });
         }
     }
     const logout = async (firebaseConfig:FirebaseOptions) => {
@@ -78,7 +92,6 @@
         const auth = getAuth();
         await auth.signOut();
         }
-
     let sign:HTMLDivElement;
 </script>
 {#if clickmenu%2 === 1}
@@ -92,22 +105,20 @@
                 on:mouseleave={()=>{sign.style.display = "none"}}>
                 <IconButton class="material-icons">account_circle</IconButton>
                 <div class="show" bind:this={sign}>
-                    <div class="log-state">{curUser ? '로그인 중' : '비로그인 중'}</div>
+                    <div class="log-state">{curUser ? $my_id : '비로그인 중'}</div>
                     <div>
-                        <button on:click={async ()=>{
-                            login(firebaseConfig)
-                            let auth = getAuth();
-                            let user = auth.currentUser;
-                            let mail = user?.email;
-                            await fetch(`/DB/User?mail=${mail}`)
-                            if(typeof mail === "string")$my_id = mail
-                            $islogin = true
-                        }}>로그인</button>
-                        <button on:click={()=>{
-                            logout(firebaseConfig)
-                            $islogin = false
-                            $my_id = ""
-                        }}>로그아웃</button>
+                        {#if curUser}
+                            <button on:click={async ()=>{
+                                logout(firebaseConfig)
+                                $islogin = false
+                            }}>로그아웃</button>
+                        {:else}
+                            <button on:click={async ()=>{
+                                login(firebaseConfig)
+                                $my_id = ""
+                                $islogin = true
+                            }}>로그인 또는 화원가입</button>
+                        {/if}
                     </div>
                 </div>
             </div>
