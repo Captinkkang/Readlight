@@ -2,7 +2,6 @@
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
     import { islogin } from "$lib/stroe";
-    import { json } from "@sveltejs/kit";
     interface Ibooks {
         title: string;
         fulltitle: string;
@@ -40,20 +39,24 @@
                 arr[i].full2 = false;
             }
         }
-        let barray = JSON.stringify(arr)
-        console.log(arr)
+        //let barray = JSON.stringify(arr)
+        //console.log(arr)
         let sent = [];
         for(let i=0; i < arr.length; i++){
-            sent.push({likecount: arr[i].favorite, like_user: arr[i].favorite_click, view: arr[i].view, isbn: arr[i].isbn13})
+            //console.log(arr[i].like_users)
+            sent.push({likecount: arr[i].favorite, like_user: [], favorite_click: arr[i].favorite_click, view: arr[i].view, isbn: Number(arr[i].isbn13)})
         }
+        //console.log(JSON.stringify(sent),"sent")
         let res = await fetch(`/DB/Books?barray=${JSON.stringify(sent)}`)
         let ins = await res.json()
-        let result;
-        result = JSON.parse(ins)
-        /*for(let i=0; i<arr.length; i++){
-
+        //console.log(ins, typeof ins)
+        for(let i=0; i<arr.length; i++){
+            arr[i].favorite = ins[i].likecount
+            arr[i].like_users = ins[i].like_user
+            arr[i].favorite_click = ins[i].favorite_click
+            arr[i].view = ins[i].view
         }
-        //for문으로 각각 책에 자기 email있는지 확인하고 있으면 favorite_click=1 해야함==>서버에 이미 코드가 짜여 있는데 뭐지*/
+        console.log(arr)
     });
 </script>
 
@@ -65,9 +68,13 @@
                 {#each arr as { thumnail, title, fulltitle, publish, writer, fullwriter, coment, view, favorite, favorite_click, like_users, number, full, full2, isbn13 }}
                     <div
                         class="book"
-                        on:contextmenu={(e) => {
+                        on:contextmenu={async (e) => {
                             e.preventDefault();
                             view++;
+                            await fetch(`DB/view?view=${Number(isbn13)}`)
+                            let go = await fetch(`selectbook/server?isbn=${isbn13}`)
+                            let info = await go.json()
+                            console.log(info)
                         }}
                     >
                         <div class="content">
@@ -78,6 +85,7 @@
                                         {title}
                                         <span
                                             class="change"
+                                            on:keypress={()=>{}}
                                             on:click={() => {
                                                 full = true;
                                             }}>...</span
@@ -86,6 +94,7 @@
                                         {fulltitle}
                                         <span
                                             class="change"
+                                            on:keypress={()=>{}}
                                             on:click={() => {
                                                 full = false;
                                             }}>&lt;</span
@@ -97,16 +106,18 @@
                             </div>
                             <div
                                 class="book-image"
+                                on:keypress={()=>{}}
                                 on:click={() => {
                                     let sent = arr[number];
                                     localStorage.setItem(
                                         "selectregion",
                                         JSON.stringify(sent)
                                     );
+                                    
                                     goto("/selectregion");
                                 }}
                             >
-                                <img src={thumnail} />
+                                <img src={thumnail} alt="press F5"/>
                             </div>
                             <div class="writer">
                                 <span style="color: white;">&nbsp;</span
@@ -115,6 +126,7 @@
                                         {writer}
                                         <span
                                             class="change"
+                                            on:keypress={()=>{}}
                                             on:click={() => {
                                                 full2 = true;
                                             }}>...</span
@@ -123,6 +135,7 @@
                                         {fullwriter}
                                         <span
                                             class="change"
+                                            on:keypress={()=>{}}
                                             on:click={() => {
                                                 full2 = false;
                                             }}>&lt;</span
@@ -144,8 +157,9 @@
                             </span>
                             <div
                                 class="heart"
+                                on:keypress={()=>{}}
                                 on:click={async () => {
-                                    let newh;
+                                    let newh;//나를 제외한 좋아요 수
                                     if(favorite_click === 1){
                                         newh = favorite-1
                                     }else newh = favorite
@@ -157,32 +171,15 @@
                                             favorite--
                                             favorite_click = 0
                                         }
-                                        let sent = {num:favorite_click, isbn:isbn13}
+                                        let sent = {favorite: favorite, favorite_click:favorite_click, isbn:Number(isbn13)}
                                         await fetch(`/DB/favorite?click=${JSON.stringify(sent)}`)
-                                        /*
-                                        if (favorite_click === 0) {
-                                            favorite++;
-                                            favorite_click = 1;
-                                        } else {
-                                            favorite_click = 0;
-                                            favorite--;
-                                        }*/
                                     }else {alert("로그인 후 이용가능합니다.")}
-                                    
-                                    //로그인 true일때
-                                    //내가 이 책의 좋아요 유저 정보에 있는지 확인
-                                    //없다면 누를때 ++, 다시 누르면 --
-                                    //db에 이 책의 isbn등 정보를 Books 콜렉션에 하나 넣는다
-                                    
-                                    //이후 책을 불러올때 한번 db와 연결
-                                    //이 책과 같은 isbn을 가진 책이 db에 있으면
-                                    //해당 db데이터의 좋아요수와 조회수를 favorite, view에 각각 넣는다 
                                 }}
                             >
                                 {#if favorite_click === 0}
-                                    <img src="/heart.svg" />
+                                    <img src="/heart.svg" alt="press F5"/>
                                 {:else}
-                                    <img src="/filled-heart.svg" />
+                                    <img src="/filled-heart.svg" alt="press F5"/>
                                 {/if}
                                 {favorite}
                             </div>
@@ -232,6 +229,7 @@
     }
     .book {
         margin-left: 20px;
+        margin-bottom: 20px;
         width: 13vw;
         height: 58vh;
         background-color: white;

@@ -13,15 +13,16 @@ export const GET: RequestHandler = async ({ url }) => {
     let res = url.searchParams.get("click");
     if(typeof res === "string"){
         let json = JSON.parse(res)
-        let click = Number(json.num)
+        console.log(json)
+        let click = json.favorite_click
         await client.connect();
         const db = client.db('readlight');
         const User = db.collection('books');
         const book = await User.findOne({isbn: json.isbn})
-        if(click === 0&&book !== null){
+        if(click === 1&&book !== null){
             book.like_users.push(my_id)
             book.likecount++
-        }else if(click === 1&&book !== null){
+        }else if(click === 0&&book !== null){
             book.likecount--
             for(let i=0; i<book.like_users.lenght; i++){
                 if(book.likeusers[i] === json.isbn){
@@ -30,10 +31,6 @@ export const GET: RequestHandler = async ({ url }) => {
             }
         }
     }
-        
-    
-    let sent;
-    
 
     return new Response("ok", {
         headers: {

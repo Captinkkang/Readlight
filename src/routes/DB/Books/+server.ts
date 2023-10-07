@@ -11,18 +11,20 @@ const client = new MongoClient(uri, {
 });
 export const GET: RequestHandler = async ({ url }) => {
     let barray = url.searchParams.get("barray");
+    //console.log(barray)
     let sent;
     await client.connect();
     const db = client.db('readlight');
     const User = db.collection('books');
     if (typeof barray === "string") {
         let res = JSON.parse(barray)
-        let status;
+        //console.log(res)
+        //let status;
         for (let i = 0; i < res.length; i++) {
-            let dbbook = await User.findOne({ isbn13: res[i].isbn13 })
+            let dbbook = await User.findOne({ isbn13: res[i].isbn })
             if (dbbook === null) {
                 await User.insertOne({
-                    title: res[i].title, writer: res[i].writer, publisher: res[i].publish, likecount: res[i].favorite, like_users: [], view: res[i].view, isbn13: res[i].isbn13
+                    likecount: res[i].favorite, like_users: [], view: res[i].view, isbn13: res[i].isbn
                 })
             } else {
                 res[i].favorite = dbbook.likecount
@@ -34,9 +36,8 @@ export const GET: RequestHandler = async ({ url }) => {
                     }else res[i].favorite_click = 0
                 }
             }
-            
-            sent = res
-        }
+        }sent = res
+        //console.log(sent,JSON.stringify(sent))
     }
     
 

@@ -50,15 +50,26 @@
         let id = prompt("이메일를 입력해 주세요","aaaaa@aaaaaa.com")
         let pw = prompt("6자리 비밀번호를 입력해 주세요")
         let obj = JSON.stringify({id:id, pw:pw})
-        let check = await fetch(`/DB/User?user${obj}`)
+        console.log(obj)
+        let check = await fetch(`/DB/User?id=${id}&pw=${pw}`)
         let json = await check.json()
         console.log(json, typeof id, typeof pw)
         if(json.answer === 0&&id !== null&&pw !== null){
-            $my_id = id
+            let arr = id.split('')
+            let num = 0
+            for(let i=0; i<arr.length; i++){
+                if(arr[i] === "@"){
+                    num = i
+                    break
+                }
+            }
+            arr.splice(num,arr.length-num)
+            $my_id = arr.join(",")
             const auth = getAuth();
             createUserWithEmailAndPassword(auth, id, pw)
             .then((userCredential) => {
                 const user = userCredential.user;
+                $islogin = true
             // ...
             })
             .catch((error) => {
@@ -69,13 +80,23 @@
             });
         }else if(json.answer === 1&&id !== null&&pw !== null){
             console.log("ok 0")
-            $my_id = id
+            let arr = id.split('')
+            let num = 0
+            for(let i=0; i<arr.length; i++){
+                if(arr[i] === "@"){
+                    num = i
+                    break
+                }
+            }
+            arr.splice(num,arr.length-num)
+            $my_id = arr.join(",")
             const auth = getAuth();
             signInWithEmailAndPassword(auth, id, pw)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
                 console.log(user)
+                $islogin = true
                 // ...
             })
             .catch((error) => {
@@ -91,6 +112,7 @@
         }
         const auth = getAuth();
         await auth.signOut();
+        $islogin = false 
         }
     let sign:HTMLDivElement;
 </script>
@@ -102,21 +124,19 @@
         <div class="button-wrapper">
             <div style="display: flex; align-items: center;" 
                 on:mouseover={()=>{sign.style.display = "inline-block"}}
+                on:focus={()=>{}}
                 on:mouseleave={()=>{sign.style.display = "none"}}>
                 <IconButton class="material-icons">account_circle</IconButton>
                 <div class="show" bind:this={sign}>
-                    <div class="log-state">{curUser ? $my_id : '비로그인 중'}</div>
+                    <div class="log-state">{curUser ? `${$my_id}님` : '비로그인 중'}</div>
                     <div>
                         {#if curUser}
                             <button on:click={async ()=>{
                                 logout(firebaseConfig)
-                                $islogin = false
                             }}>로그아웃</button>
                         {:else}
                             <button on:click={async ()=>{
                                 login(firebaseConfig)
-                                $my_id = ""
-                                $islogin = true
                             }}>로그인 또는 화원가입</button>
                         {/if}
                     </div>
