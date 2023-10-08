@@ -71,7 +71,7 @@
                         on:contextmenu={async (e) => {
                             e.preventDefault();
                             view++;
-                            await fetch(`DB/view?view=${Number(isbn13)}`)
+                            await fetch(`DB/view?view=${{isbn: Number(isbn13), view: view}}`)
                             let go = await fetch(`selectbook/server?isbn=${isbn13}`)
                             let info = await go.json()
                             console.log(info)

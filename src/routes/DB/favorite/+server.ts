@@ -20,15 +20,10 @@ export const GET: RequestHandler = async ({ url }) => {
         const User = db.collection('books');
         const book = await User.findOne({isbn: json.isbn})
         if(click === 1&&book !== null){
-            book.like_users.push(my_id)
-            book.likecount++
+            book.updateOne({isbn: json.isbn},{ $push: {like_users: my_id}},{ $set: {likecount: json.favorite}})
+            //book.updateOne({isbn: json.isbn},{ $set: {likecount: json.favorite}})
         }else if(click === 0&&book !== null){
-            book.likecount--
-            for(let i=0; i<book.like_users.lenght; i++){
-                if(book.likeusers[i] === json.isbn){
-                    book.like_users.splice(i,1)
-                }
-            }
+            book.updateOne({isbn: json.isbn},{ $pull: {like_users: my_id}},{ $set: {likecount: json.favorite}})
         }
     }
 

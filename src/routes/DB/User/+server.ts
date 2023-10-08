@@ -14,7 +14,6 @@ export const GET:RequestHandler = async ({url}) => {
   let mail = url.searchParams.get("id");
   let pw = url.searchParams.get("pw")
   let msg = 0
-  console.log(mail,pw,typeof mail, typeof pw)
   if(typeof mail === "string"){
     await client.connect();
     const db = client.db('readlight');
