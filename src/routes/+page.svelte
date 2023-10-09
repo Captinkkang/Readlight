@@ -19,6 +19,7 @@
                         on:click={async () => {
                         const fetchtemp = await fetch(`/server?keyword=${inp}`);
                         let res = await fetchtemp.json();
+                        console.log(res)
                         let arr = [];
                         for (let i = 0; i < res.response.docs.length; i++) {
                             let insert = {
