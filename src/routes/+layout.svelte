@@ -49,22 +49,24 @@
         let check = await fetch(`/DB/User?id=${id}&pw=${pw}`);
         let json = await check.json();
         if (json.answer === 0 && id !== null && pw !== null) {
-            let arr = id.split("");
-            let num = 0;
-            for (let i = 0; i < arr.length; i++) {
-                if (arr[i] === "@") {
-                    num = i;
-                    break;
-                }
-            }
-            arr.splice(num, arr.length - num);
-            $my_id = arr.join();
             const auth = getAuth();
             createUserWithEmailAndPassword(auth, id, pw)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    $islogin = true;
-                    alert(`로그인 성공! ${$my_id}님 환영합니다.`);
+                    if(id !== null){
+                        let arr = id.split("");
+                        let num = 0;
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i] === "@") {
+                                num = i;
+                                break;
+                            }
+                        }
+                        arr.splice(num, arr.length - num);
+                        $my_id = arr.join();
+                        $islogin = true;
+                        alert(`로그인 성공! ${$my_id}님 환영합니다.`);
+                    }
                     // ...
                 })
                 .catch((error) => {
@@ -93,25 +95,27 @@
                     // ..
                 });
         } else if (json.answer === 1 && id !== null && pw !== null) {
-            console.log("ok 0");
-            let arr = id.split("");
-            let num = 0;
-            for (let i = 0; i < arr.length; i++) {
-                if (arr[i] === "@") {
-                    num = i;
-                    break;
-                }
-            }
-            arr.splice(num, arr.length - num);
-            $my_id = arr.join("");
+            
             const auth = getAuth();
             signInWithEmailAndPassword(auth, id, pw)
                 .then((userCredential) => {
                     // Signed in
-                    const user = userCredential.user;
-                    console.log(user);
-                    $islogin = true;
-                    alert(`로그인 성공! ${$my_id}님 환영합니다.`);
+                    if(id !== null){
+                        let arr = id.split("");
+                        let num = 0;
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i] === "@") {
+                                num = i;
+                                break;
+                            }
+                        }
+                        arr.splice(num, arr.length - num);
+                        $my_id = arr.join("");
+                        const user = userCredential.user;
+                        console.log(user);
+                        $islogin = true;
+                        alert(`로그인 성공! ${$my_id}님 환영합니다.`);
+                    }
                     // ...
                 })
                 .catch((error) => {
