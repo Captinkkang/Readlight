@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
-    import { islogin } from "$lib/stroe";
+    import { islogin, my_id } from "$lib/stroe";
     interface Ibooks {
         title: string;
         fulltitle: string;
@@ -42,11 +42,13 @@
         //let barray = JSON.stringify(arr)
         //console.log(arr)
         let sent = [];
-        for(let i=0; i < arr.length; i++){
-            //console.log(arr[i].like_users)
-            sent.push({likecount: arr[i].favorite, like_user: [], favorite_click: arr[i].favorite_click, view: arr[i].view, isbn: Number(arr[i].isbn13)})
+        if($my_id === ""){
+            $my_id
+            
         }
-        //console.log(JSON.stringify(sent),"sent")
+        for(let i=0; i < arr.length; i++){
+            sent.push({likecount: arr[i].favorite, like_user: [], favorite_click: arr[i].favorite_click, view: arr[i].view, isbn: Number(arr[i].isbn13), id: $my_id})
+        }
         let res = await fetch(`/DB/Books?barray=${JSON.stringify(sent)}`)
         let ins = await res.json()
         //console.log(ins, typeof ins)
@@ -71,10 +73,20 @@
                         on:contextmenu={async (e) => {
                             e.preventDefault();
                             view++;
-                            await fetch(`DB/view?view=${{isbn: Number(isbn13), view: view}}`)
+                            let sent = {isbn: Number(isbn13), view: view}
+                            console.log(view,typeof isbn13, Number(isbn13))
+                            await fetch(`DB/view?view=${view}&isbn=${Number(isbn13)}`)
                             let go = await fetch(`selectbook/server?isbn=${isbn13}`)
                             let info = await go.json()
-                            console.log(info)
+                            let infos = {
+                                title: info.response.detail[0].book.bookname,
+                                writer: info.response.detail[0].book.authors,
+                                url: info.response.detail[0].book.bookImageURL,
+                                class: info.response.detail[0].book.class_nm,
+                                description: info.response.detail[0].book.description,
+                                date: info.response.detail[0].book.publication_date,
+                                publisher: info.response.detail[0].book.publisher
+                            }
                         }}
                     >
                         <div class="content">
@@ -171,7 +183,7 @@
                                             favorite--
                                             favorite_click = 0
                                         }
-                                        let sent = {favorite: favorite, favorite_click:favorite_click, isbn:Number(isbn13)}
+                                        let sent = {favorite: favorite, favorite_click:favorite_click, isbn:Number(isbn13), id: $my_id}
                                         await fetch(`/DB/favorite?click=${JSON.stringify(sent)}`)
                                     }else {alert("로그인 후 이용가능합니다.")}
                                 }}

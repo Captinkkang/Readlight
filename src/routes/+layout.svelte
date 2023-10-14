@@ -25,6 +25,18 @@
     const firebaseConfig = data.firebaseConfig;
     let curUser: User | null = null;
     onMount(() => {
+        if(curUser !== null&&curUser.email !== null){
+            let arr = curUser.email.split("");
+            let num = 0;
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] === "@") {
+                    num = i;
+                    break;
+                }
+            }
+            arr.splice(num, arr.length - num);
+            $my_id = arr.join();
+        }
         if (getApps().length === 0) {
             //앱 배열정보가 0이면 앱을 하나 만들기
             initializeApp(firebaseConfig);
@@ -162,12 +174,14 @@
                         <button
                             on:click={async () => {
                                 logout(firebaseConfig);
+                                if($islogin === false)location.reload()
                             }}>로그아웃</button
                         >
                     {:else}
                         <button
                             on:click={async () => {
                                 login(firebaseConfig);
+                                if($islogin === true)location.reload()
                             }}>로그인 또는 화원가입</button
                         >
                     {/if}

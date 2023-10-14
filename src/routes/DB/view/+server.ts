@@ -11,15 +11,18 @@ const client = new MongoClient(uri, {
     }
 });
 export const GET: RequestHandler = async ({ url }) => {
-    let res = url.searchParams.get("view");
-    if(typeof res === "string"){
-        let json = JSON.parse(res)
+    let view = url.searchParams.get("view");
+    let isbn = url.searchParams.get("isbn");
+    if(typeof view === "string"&&typeof isbn === "string"){
+        //let json = JSON.parse(view)
+        //console.log(view, isbn)
+        let n = Number(view)+1
         await client.connect();
         const db = client.db('readlight')
         const user = db.collection('books')
-        const book = await user.findOne({isbn13: json.isbn})
+        const book = await user.findOne({ "isbn13" : {$eq: Number(isbn)}})
         if(book !== null){
-            book.updateOne({isbn13: json.isbn},{ $set: {view: json.view}})
+            db.collection("books").updateOne({"isbn13": {$eq: Number(isbn)}},{ $set: {view: n}})
         }
     }
 
