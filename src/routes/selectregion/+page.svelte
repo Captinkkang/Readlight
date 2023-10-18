@@ -390,8 +390,7 @@
         align-items: center;
         flex-direction: column;
         width: 1190px;
-        height: 90vh;
-        overflow: auto;
+        height: 75vh;
     }
     ::-webkit-scrollbar {
         width: 10px;
@@ -426,6 +425,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-around;
+        overflow: auto;
     }
     .check-container {
         display: flex;

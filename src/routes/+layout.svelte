@@ -24,32 +24,6 @@
     export let data: PageData;
     const firebaseConfig = data.firebaseConfig;
     let curUser: User | null = null;
-    onMount(() => {
-        if(curUser !== null&&curUser.email !== null){
-            let arr = curUser.email.split("");
-            let num = 0;
-            for (let i = 0; i < arr.length; i++) {
-                if (arr[i] === "@") {
-                    num = i;
-                    break;
-                }
-            }
-            arr.splice(num, arr.length - num);
-            $my_id = arr.join();
-        }
-        if (getApps().length === 0) {
-            //앱 배열정보가 0이면 앱을 하나 만들기
-            initializeApp(firebaseConfig);
-        }
-        const auth = getAuth();
-        //유저의 인증 정보 가져오기, 정확히는 인증 상태
-        const un = onAuthStateChanged(auth, (user) => {
-            //인증 상태가 바뀔때 마다 user를 curuser에 넣는다
-            curUser = user;
-        });
-        return un;
-        //원래는 리턴 방식이 함수임
-    });
     const login = async (firebaseConfig: FirebaseOptions) => {
         if (getApps().length === 0) {
             //앱 있는지 없는지 확인
@@ -145,6 +119,33 @@
         await auth.signOut();
         $islogin = false;
     };
+    onMount(() => {
+        if(curUser !== null&&curUser.email !== null){
+            let arr = curUser.email.split("");
+            let num = 0;
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i] === "@") {
+                    num = i;
+                    break;
+                }
+            }
+            arr.splice(num, arr.length - num);
+            $my_id = arr.join();
+        }
+        if (getApps().length === 0) {
+            //앱 배열정보가 0이면 앱을 하나 만들기
+            initializeApp(firebaseConfig);
+        }
+        const auth = getAuth();
+        //유저의 인증 정보 가져오기, 정확히는 인증 상태
+        const un = onAuthStateChanged(auth, (user) => {
+            //인증 상태가 바뀔때 마다 user를 curuser에 넣는다
+            curUser = user;
+        });
+        return un;
+        //원래는 리턴 방식이 함수임
+    });
+    
     let sign: HTMLDivElement;
 </script>
 
@@ -167,7 +168,7 @@
             <IconButton class="material-icons">account_circle</IconButton>
             <div class="show" bind:this={sign}>
                 <div class="log-state">
-                    {curUser ? `${$my_id}님` : "비로그인 중"}
+                    {curUser ? `${my_id}님` : "비로그인 중"}
                 </div>
                 <div>
                     {#if curUser}

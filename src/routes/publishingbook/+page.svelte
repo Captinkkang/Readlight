@@ -47,7 +47,7 @@
     <div class="align-con">
         {#if ready === true}
             <div class="con">
-                <div class="title">출판 예정 도서</div>
+                <div class="titles">출판 예정 도서</div>
                 <div class="books">
                     {#each arr as {thumnail, title, publish, writer, price}}
                     <div class="book" on:contextmenu={(e)=>{
@@ -79,12 +79,12 @@
         background-size: cover;
         background-position: bottom;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
     }
     .align-con {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
     }
     .con {
@@ -92,19 +92,19 @@
         /*background-color: #D9D9D9;
         filter: opacity(90%);*/
         background-color: rgba(217, 217, 217, 0.9);
-        height: 62vh;
+        height: 80vh;
         margin-top: 5px;
         display: flex;
         flex-direction: column;
-        flex-direction: column;
         align-items: center;
-        overflow: auto;
     }
     .books {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         width: 100%;
+        overflow: auto;
+        margin-top: 10px;
     }
 
     .book {
@@ -119,6 +119,15 @@
     }
     .title {
         font-weight: bold;
+        border-bottom: 2px solid rgba(46, 16, 0, 0.819);
+        color: rgba(46, 16, 0, 0.819);
+    }
+    .titles {
+        text-align: center;
+        font-size: 20px;
+        width: 90%;
+        font-weight: bold;
+        border-bottom: 2px solid rgba(46, 16, 0, 0.819);
         color: rgba(46, 16, 0, 0.819);
     }
     img {

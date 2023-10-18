@@ -219,12 +219,13 @@
         margin-top: 5px;
         display: flex;
         flex-direction: column;
-        overflow: auto;
+        align-items: center;
     }
 
     .message {
         font-size: 24px;
-        width: 100%;
+        width: 90%;
+        border-bottom: 2px solid black;
         text-align: center;
         font-weight: bolder;
     }
@@ -238,6 +239,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         margin-top: 10px;
+        overflow: auto;
     }
     .book {
         margin-left: 20px;
