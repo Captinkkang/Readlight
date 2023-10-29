@@ -121,7 +121,10 @@
     </div>
     <div class="library-inform" style={info.name ? "" : "visibility:hidden;"}>
         <div class="text">
-            <div class="name">{info.name} <span class="blue" on:click={()=>{goto(info.hompage)}}></span></div>
+            <div class="name">{info.name} <span class="blue" 
+                on:keypress={()=>{}}
+                on:click={()=>{goto(info.hompage)}
+            }></span></div>
             <div>{info.post}</div>
             <div class="phone">{info.phone}</div>
             <div>휴관일: <span>{info.closeday}</span></div>

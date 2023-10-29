@@ -12,8 +12,7 @@
         favorite: number;
         number: number;
     }
-
-    let arr: Ibooks[] = [];
+    
     let brr: Ibooks[] = [];
     let ready = false;
     onMount(async () => {
@@ -23,129 +22,15 @@
             `/bookrecommand/api2?arr=${JSON.stringify(json)}`
         );
         let bson = await binfo.json();
-        console.log(bson);
         brr = bson;
-
-        const now = new Date();
-        const year = now.getFullYear();
-        let mon = now.getMonth() + 1;
-        let da = now.getDate();
-        let month;
-        let day;
-
-        if (mon < 10) month = `0${mon}`;
-        else month = mon;
-        if (da < 10) day = `0${da}`;
-        else day = da;
-        let date = `${year}${month}${day}`;
-
-        let agoyear = year;
-        const res = await fetch(
-            `/bookrecommand/api?ago=${agoyear}&date=${date}`
-        );
-        const text = await res.text();
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(text, "text/xml");
-        let list = xml.querySelectorAll("list");
-        for (let i = 0; i < list.length; i++) {
-            let insert = {
-                subject: list[i]
-                    .querySelector("item")
-                    ?.querySelector("drCodeName")?.innerHTML,
-                title: list[i]
-                    .querySelector("item")
-                    ?.querySelector("recomtitle")?.innerHTML,
-                fulltitle: "",
-                writer: list[i]
-                    .querySelector("item")
-                    ?.querySelector("recomauthor")?.innerHTML,
-                publish: list[i]
-                    .querySelector("item")
-                    ?.querySelector("recompublisher")?.innerHTML,
-                thumnail: list[i]
-                    .querySelector("item")
-                    ?.querySelector("recomfilepath")?.innerHTML,
-                coment: "",
-                view: 0,
-                favorite: 0,
-                number: 0,
-            };
-            arr.push(insert);
-        }
-        for (let i = 0; i < arr.length; i++) {
-            arr[i].number = i + 1;
-        }
         ready = true;
     });
 
     let loveit: number[] = [];
-    /*
-        장르별 분류가능
-        제목 11텍스트 이상 줄이기
-        도서 overflow처리
-    */
 </script>
-
 <main>
     {#if ready === true}
         <div class="con">
-            <div class="librarian background">
-                <div class="title">사서 추천 도서</div>
-                <div class="book-list">
-                    <span />
-                    <div class="books">
-                        {#each arr as { title, writer, publish, thumnail, coment, view, favorite, number }}
-                            <div
-                                class="book"
-                                on:contextmenu={(e) => {
-                                    e.preventDefault();
-                                    view++;
-                                }}
-                            >
-                                <div class="content">
-                                    <div class="title">
-                                        <span style="color: white;">.</span
-                                        >{title}
-                                    </div>
-                                    <div class="book-image">
-                                        <img src={thumnail} alt="press F5" />
-                                    </div>
-                                    <div class="writer">
-                                        <span style="color: white;">.</span
-                                        >{writer}
-                                        저
-                                    </div>
-                                    <div class="coment">
-                                        <span style="color: white;">.</span
-                                        >-{coment}
-                                    </div>
-                                    <div class="publish">{publish}</div>
-                                </div>
-                                <div class="loveit">
-                                    <span class="eye">
-                                        <img
-                                            src="./eye2.svg"
-                                            alt="press F5"
-                                        />{view}
-                                    </span>
-                                    <span class="heart">
-                                        <input
-                                            type="checkbox"
-                                            id="inp{number}"
-                                            value={number}
-                                            bind:group={loveit}
-                                        />
-                                        <label
-                                            class="img"
-                                            for="inp{number}"
-                                        />{favorite}
-                                    </span>
-                                </div>
-                            </div>
-                        {/each}
-                    </div>
-                </div>
-            </div>
             <div class="libraries background">
                 <div class="title">readlight 사용자 추천 도서</div>
                 <div class="book-list">

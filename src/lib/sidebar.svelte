@@ -1,11 +1,27 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
     import { isMenuOpen } from "./stroe";
     import { fly } from "svelte/transition";
     import Button from '@smui/button';
     import Fab from '@smui/fab';
     import IconButton from '@smui/icon-button';
     import { goto } from "$app/navigation";
+    import { binfo } from "$lib/stroe";
+    let book: { title: string; writer?: string; url?: string; class?: string; description?: string; date?: string; publisher?: string; };
+    /*
+    <div class="modified-book">
+            <div class="book">
+                <div class="title">{$binfo.title}</div>
+                <div class="book-img">
+                    <img src="{$binfo.url}" alt="press F5">
+                </div>
+                <div class="janrue">{$binfo.class}</div>
+                <div class="writer">{$binfo.writer}</div>
+                <div class="coment">{$binfo.description}</div>
+                <div class="publish">{$binfo.publisher}</div>
+            </div>
+        </div>
+    */
 </script>
 {#if $isMenuOpen}
     <div class="side_content" transition:fly={{x : 300, duration:500}}>
@@ -36,7 +52,18 @@
                 }}>
                     출판 예정 도서
                 </Button>
+                <Button class="menu" 
+                color="secondary" 
+                variant="raised" 
+                style=" margin-top: 20px;width: 90%;"
+                on:click={()=>{
+                    goto('/bookrank')
+                    $isMenuOpen = false
+                }}>
+                    사용자 추천 도서
+                </Button>
         </div>
+        
     </div>
 {/if}
 

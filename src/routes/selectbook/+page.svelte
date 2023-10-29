@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
-    import { islogin, my_id } from "$lib/stroe";
+    import { islogin, my_id, binfo } from "$lib/stroe";
     interface Ibooks {
         title: string;
         fulltitle: string;
@@ -59,6 +59,8 @@
             arr[i].view = ins[i].view
         }
         console.log(arr)
+        
+
     });
 </script>
 
@@ -87,6 +89,8 @@
                                 date: info.response.detail[0].book.publication_date,
                                 publisher: info.response.detail[0].book.publisher
                             }
+                            $binfo = infos
+                            console.log($binfo.writer)
                         }}
                     >
                         <div class="content">
