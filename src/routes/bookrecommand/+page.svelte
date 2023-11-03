@@ -113,26 +113,6 @@
                                     </div>
                                     <div class="publish">{publish}</div>
                                 </div>
-                                <div class="loveit">
-                                    <span class="eye">
-                                        <img
-                                            src="./eye2.svg"
-                                            alt="press F5"
-                                        />{view}
-                                    </span>
-                                    <span class="heart">
-                                        <input
-                                            type="checkbox"
-                                            id="inp{number}"
-                                            value={number}
-                                            bind:group={loveit}
-                                        />
-                                        <label
-                                            class="img"
-                                            for="inp{number}"
-                                        />{favorite}
-                                    </span>
-                                </div>
                             </div>
                         {/each}
                     </div>
