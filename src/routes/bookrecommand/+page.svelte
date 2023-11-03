@@ -17,14 +17,6 @@
     let brr: Ibooks[] = [];
     let ready = false;
     onMount(async () => {
-        let lbook = await fetch(`/DB/rank`);
-        let json = await lbook.json();
-        let binfo = await fetch(
-            `/bookrecommand/api2?arr=${JSON.stringify(json)}`
-        );
-        let bson = await binfo.json();
-        console.log(bson);
-        brr = bson;
 
         const now = new Date();
         const year = now.getFullYear();
@@ -95,63 +87,6 @@
                     <span />
                     <div class="books">
                         {#each arr as { title, writer, publish, thumnail, coment, view, favorite, number }}
-                            <div
-                                class="book"
-                                on:contextmenu={(e) => {
-                                    e.preventDefault();
-                                    view++;
-                                }}
-                            >
-                                <div class="content">
-                                    <div class="title">
-                                        <span style="color: white;">.</span
-                                        >{title}
-                                    </div>
-                                    <div class="book-image">
-                                        <img src={thumnail} alt="press F5" />
-                                    </div>
-                                    <div class="writer">
-                                        <span style="color: white;">.</span
-                                        >{writer}
-                                        저
-                                    </div>
-                                    <div class="coment">
-                                        <span style="color: white;">.</span
-                                        >-{coment}
-                                    </div>
-                                    <div class="publish">{publish}</div>
-                                </div>
-                                <div class="loveit">
-                                    <span class="eye">
-                                        <img
-                                            src="./eye2.svg"
-                                            alt="press F5"
-                                        />{view}
-                                    </span>
-                                    <span class="heart">
-                                        <input
-                                            type="checkbox"
-                                            id="inp{number}"
-                                            value={number}
-                                            bind:group={loveit}
-                                        />
-                                        <label
-                                            class="img"
-                                            for="inp{number}"
-                                        />{favorite}
-                                    </span>
-                                </div>
-                            </div>
-                        {/each}
-                    </div>
-                </div>
-            </div>
-            <div class="libraries background">
-                <div class="title">readlight 사용자 추천 도서</div>
-                <div class="book-list">
-                    <span />
-                    <div class="books">
-                        {#each brr as { title, writer, publish, thumnail, coment, view, favorite, number }}
                             <div
                                 class="book"
                                 on:contextmenu={(e) => {

@@ -1,20 +1,29 @@
 <script lang="ts">
     import { onMount } from "svelte";
     interface Ibooks {
-        subject: string | undefined;
-        title: string | undefined;
+        subject: string;
+        title: string;
         fulltitle: string;
-        writer: string | undefined;
-        publish: string | undefined;
-        thumnail: string | undefined;
+        writer: string;
+        fullwriter: string;
+        publish: string;
+        thumnail: string ;
         coment: string;
+        fullcoment: string;
         view: number;
         favorite: number;
         number: number;
+        isbn13: string;
+        class_nm: string;
+        all_rank: string;
+        region_rank: string;
+        age_rank: string;
     }
-    
+
     let brr: Ibooks[] = [];
     let ready = false;
+    let info = false
+    
     onMount(async () => {
         let lbook = await fetch(`/DB/rank`);
         let json = await lbook.json();
@@ -23,12 +32,46 @@
         );
         let bson = await binfo.json();
         brr = bson;
+        for(let i=0; i<brr.length; i++){
+            brr[i].fulltitle = brr[i].title;
+            if (brr[i].title.length > 11) {
+                brr[i].title = brr[i].title.slice(0, 11);
+            }
+            brr[i].fullwriter = brr[i].writer;
+            if (brr[i].writer.length > 11) {
+                brr[i].writer = brr[i].writer.slice(0, 11);
+            }
+        }
         ready = true;
     });
 
     let loveit: number[] = [];
+    let inform = {
+        "title":"title",
+        "img":"img",
+        "class":"class",
+        "rank":{"all":"all","region":"region","age":"age"},
+        "writer":"writer",
+        "publihser":"publisher",
+        "coment":"coment"
+    }
 </script>
 <main>
+    {#if info === true}
+        <div class="binfo">
+            <div>{inform.title}</div>
+            <div>
+                <div>{inform.img}</div>
+                <div>{inform.class}</div>
+                <div>{inform.rank}</div>
+            </div>
+            <div>
+                <div>{inform.writer}</div>
+                <div>{inform.publihser}</div>
+                <div>{inform.coment}</div>
+            </div>
+        </div>
+    {/if}
     {#if ready === true}
         <div class="con">
             <div class="libraries background">
@@ -36,12 +79,22 @@
                 <div class="book-list">
                     <span />
                     <div class="books">
-                        {#each brr as { title, writer, publish, thumnail, coment, view, favorite, number }}
+                        {#each brr as { title, writer, publish, thumnail, coment, view, favorite, number, isbn13, class_nm, region_rank, age_rank, all_rank, fulltitle, fullcoment, fullwriter }}
                             <div
                                 class="book"
                                 on:contextmenu={(e) => {
                                     e.preventDefault();
                                     view++;
+                                    inform = {
+                                        "title":fulltitle,
+                                        "img":thumnail,
+                                        "class":class_nm,
+                                        "rank":{"all":all_rank,"region":region_rank,"age":age_rank},
+                                        "writer":fullwriter,
+                                        "publihser":publish,
+                                        "coment":fullcoment
+                                    }
+                                    info = true
                                 }}
                             >
                                 <div class="content">
@@ -75,7 +128,6 @@
                                             type="checkbox"
                                             id="inp{number}"
                                             value={number}
-                                            bind:group={loveit}
                                         />
                                         <label
                                             class="img"
@@ -115,7 +167,7 @@
         flex-direction: column;
     }
     .book-list {
-        margin-top: 10px;
+        margin-top: 30px;
         overflow: auto;
     }
     .books {
@@ -123,10 +175,12 @@
         flex-direction: row;
         width: 100%;
         flex-wrap: wrap;
+        align-items: center;
     }
 
     .book {
-        margin-left: 20px;
+        margin-top: 20px;
+        margin-left: 40px;
         width: 13vw;
         height: 58vh;
         background-color: white;

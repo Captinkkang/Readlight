@@ -59,8 +59,10 @@
                     bind:value={inp}
                     on:keydown={async (e) => {
                         if (e.key !== "Enter") return;
+                        console.log(inp,"inp임")
                         const fetchtemp = await fetch(`/server?keyword=${inp}`);
                         let res = await fetchtemp.json();
+                        console.log(res,"결과임")
                         let arr = [];
                         for (let i = 0; i < res.response.docs.length; i++) {
                             let insert = {

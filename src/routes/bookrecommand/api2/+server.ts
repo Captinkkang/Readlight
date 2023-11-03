@@ -18,9 +18,14 @@ export const GET:RequestHandler = async ({url}) => {
                     "isbn13":brr[i].isbn13,
                     "title":"",
                     "writer":"",
+                    "publisher":"",
                     "thumnail":"",
                     "coment":"",
-                    "number":i
+                    "number":i,
+                    "class_nm":"",
+                    "region_rank":"",
+                    "age_rank":"",
+                    "all_rank":""
                 }
             }else {
                 brr[i] = {
@@ -31,9 +36,14 @@ export const GET:RequestHandler = async ({url}) => {
                     "isbn13":brr[i].isbn13,
                     "title":json.response.detail[0].book.bookname,
                     "writer":json.response.detail[0].book.authors,
+                    "publish":json.response.detail[0].book.publisher,
                     "thumnail":json.response.detail[0].book.bookImageURL,
                     "coment":json.response.detail[0].book.description,
-                    "number":i
+                    "number":i,
+                    "class_nm":json.response.detail[0].book.class_nm,
+                    "all_rank":json.response.loaninfo[0].Total.ranking,
+                    "region_rank":json.response.loaninfo[0].regionResult.region.ranking,
+                    "age_rank":json.response.loaninfo[0].ageResult.age.ranking
                 }
             }
         }console.log(JSON.stringify(brr)===String(brr))
