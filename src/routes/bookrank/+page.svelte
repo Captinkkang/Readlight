@@ -27,6 +27,7 @@
     onMount(async () => {
         let lbook = await fetch(`/DB/rank`);
         let json = await lbook.json();
+        console.log(json)
         let binfo = await fetch(
             `/bookrecommand/api2?arr=${JSON.stringify(json)}`
         );
@@ -58,6 +59,8 @@
 </script>
 <main>
     {#if info === true}
+    <div>
+        <div class="bt" on:click={()=>{info = false}}></div>
         <div class="binfo">
             <div>{inform.title}</div>
             <div>
@@ -71,6 +74,8 @@
                 <div>{inform.coment}</div>
             </div>
         </div>
+    </div>
+        
     {/if}
     {#if ready === true}
         <div class="con">

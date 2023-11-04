@@ -5,11 +5,14 @@ export const GET:RequestHandler = async ({url}) => {
     let brr;
     if(typeof arr === "string"){
         brr = JSON.parse(arr)
+        //console.log(brr,"zzzz")
         for(let i=0; i<brr.length; i++){
             let res = await fetch(`http://data4library.kr/api/srchDtlList?authKey=b08eefde44fca41c8d13b5574ca3472976670554ea7690a72ab823dba3f44206&isbn13=${brr[i].isbn13}&loaninfoYN=Y&format=json`)
-            let json = await res.json()
-            //console.log(json.response)
-            if(json.response.error === "ISBN을 확인해 주시기 바랍니다."){
+            let zzfQQ = JSON.stringify(await res.json())
+            let json = JSON.parse(zzfQQ)
+            //console.log(json)
+            if(typeof json.response.error === "string"){
+                //console.log(`${i}번째 이상해씨 발`)
                 brr[i] = {
                     "_id":brr[i]._id,
                     "likecount":brr[i].likecount,
@@ -27,7 +30,13 @@ export const GET:RequestHandler = async ({url}) => {
                     "age_rank":"",
                     "all_rank":""
                 }
-            }else {
+            }else{
+                //console.log(`${i}번째 인생...`)
+                //console.log(zzfQQ)
+                /*console.log(json.response.loanInfo[0].Total,` 이건 니 전부`)
+                console.log(json.response.loanInfo[1],`이건 니가 살던 집 `)
+                console.log(json.response.loanInfo[2],`이건 니가온 인생`)
+                console.log(json.response.loanInfo[3],`그리고 이건 너의 기억...`)*/
                 brr[i] = {
                     "_id":brr[i]._id,
                     "likecount":brr[i].likecount,
@@ -41,12 +50,12 @@ export const GET:RequestHandler = async ({url}) => {
                     "coment":json.response.detail[0].book.description,
                     "number":i,
                     "class_nm":json.response.detail[0].book.class_nm,
-                    "all_rank":json.response.loaninfo[0].Total.ranking,
-                    "region_rank":json.response.loaninfo[0].regionResult.region.ranking,
-                    "age_rank":json.response.loaninfo[0].ageResult.age.ranking
+                    "all_rank":json.response.loanInfo[1].Total,
+                    "region_rank":json.response.loanInfo[2].regionResult,
+                    "age_rank":json.response.loanInfo[3].ageResult
                 }
             }
-        }console.log(JSON.stringify(brr)===String(brr))
+        }//console.log(brr)
     }
     
     return new Response(JSON.stringify(brr), {
