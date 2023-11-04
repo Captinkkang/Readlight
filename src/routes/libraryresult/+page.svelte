@@ -185,8 +185,8 @@
         background-color: #c388ff;
     }
     .library-inform {
-        width: 30vw;
-        height: 30vw;
+        width: 40vw;
+        height: 40vw;
         color: white;
         display: flex;
 
