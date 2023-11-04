@@ -1,13 +1,13 @@
 <script lang="ts">
     import { onMount } from "svelte";
     interface Ibooks {
-        subject: string | undefined;
-        title: string | undefined;
+        subject: string|undefined;
+        title: string|undefined;
         fulltitle: string;
-        writer: string | undefined;
-        publish: string | undefined;
-        thumnail: string | undefined;
-        coment: string;
+        writer: string|undefined;
+        publish: string|undefined;
+        thumnail: string|undefined;
+        coment: string|undefined;
         view: number;
         favorite: number;
         number: number;
@@ -67,6 +67,7 @@
         for (let i = 0; i < arr.length; i++) {
             arr[i].number = i + 1;
         }
+            
         ready = true;
     });
 
@@ -139,7 +140,7 @@
         /*background-color: #D9D9D9;
         filter: opacity(90%);*/
         background-color: rgba(217, 217, 217, 0.9);
-        height: 65vh;
+        height: 80vh;
         margin-top: 10px;
         display: flex;
         flex-direction: column;
@@ -156,7 +157,8 @@
     }
 
     .book {
-        margin-left: 20px;
+        margin-left: 60px;
+        margin-top: 40px;
         width: 13vw;
         height: 58vh;
         background-color: white;

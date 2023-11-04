@@ -16,6 +16,7 @@
         let res = await fetch(url);
         //console.log(await res.json(),'res')
         const json = await res.json();
+        console.log(json)
         //console.log(JSON.stringify(json),'docs')
         
         for(let i=0; i<json.docs.length; i++){
@@ -28,18 +29,19 @@
                 price: json.docs[i].PRE_PRICE
             }
             arr.push(insert)
+            //console.log(arr[i].thumnail)
+        }
+        for(let i=0; i<arr.length; i++){
+            arr[i].fulltitle = arr[i].title;
+            if (arr[i].title.length > 8) {
+                arr[i].title = arr[i].title.slice(0, 8);
+            }
+            if (arr[i].writer.length > 11) {
+                arr[i].writer = arr[i].writer.slice(0, 11);
+            }
         }
         //console.log(arr)
         ready = true
-        /*for(let i = 0; i < arr.length; i++){
-            if(arr[i].title.length > 11){
-                arr[i].fulltitle = arr[i].title
-                arr[i].title = arr[i].title.slice(0,11)
-            }
-        }*/
-        /*for(let i=0; i<arr.length; i++){
-            arr[i].number = i+1
-        }*/
     })
 </script>
 

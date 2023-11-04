@@ -11,7 +11,7 @@
         coment: string;
         fullcoment: string;
         view: number;
-        favorite: number;
+        likecount: number;
         number: number;
         isbn13: string;
         class_nm: string;
@@ -33,14 +33,19 @@
         );
         let bson = await binfo.json();
         brr = bson;
+        console.log(brr)
         for(let i=0; i<brr.length; i++){
             brr[i].fulltitle = brr[i].title;
-            if (brr[i].title.length > 11) {
-                brr[i].title = brr[i].title.slice(0, 11);
+            if (brr[i].title.length > 8) {
+                brr[i].title = brr[i].title.slice(0, 8);
             }
             brr[i].fullwriter = brr[i].writer;
             if (brr[i].writer.length > 11) {
                 brr[i].writer = brr[i].writer.slice(0, 11);
+            }
+            brr[i].fullcoment = brr[i].coment;
+            if (brr[i].coment.length > 11) {
+                brr[i].coment = brr[i].coment.slice(0, 11);
             }
         }
         ready = true;
@@ -84,7 +89,7 @@
                 <div class="book-list">
                     <span />
                     <div class="books">
-                        {#each brr as { title, writer, publish, thumnail, coment, view, favorite, number, isbn13, class_nm, region_rank, age_rank, all_rank, fulltitle, fullcoment, fullwriter }}
+                        {#each brr as { title, writer, publish, thumnail, coment, view, likecount, number, isbn13, class_nm, region_rank, age_rank, all_rank, fulltitle, fullcoment, fullwriter }}
                             <div
                                 class="book"
                                 on:contextmenu={(e) => {
@@ -104,8 +109,7 @@
                             >
                                 <div class="content">
                                     <div class="title">
-                                        <span style="color: white;">.</span
-                                        >{title}
+                                        <span style="color: white;">.</span>{`${number+1}위|`}{title}...
                                     </div>
                                     <div class="book-image">
                                         <img src={thumnail} alt="press F5" />
@@ -117,27 +121,16 @@
                                     </div>
                                     <div class="coment">
                                         <span style="color: white;">.</span
-                                        >-{coment}
+                                        >-{coment}...
                                     </div>
                                     <div class="publish">{publish}</div>
                                 </div>
                                 <div class="loveit">
                                     <span class="eye">
-                                        <img
-                                            src="./eye2.svg"
-                                            alt="press F5"
-                                        />{view}
+                                        <img src="./eye2.svg" alt="press F5" />{view}
                                     </span>
                                     <span class="heart">
-                                        <input
-                                            type="checkbox"
-                                            id="inp{number}"
-                                            value={number}
-                                        />
-                                        <label
-                                            class="img"
-                                            for="inp{number}"
-                                        />{favorite}
+                                        <img src="/filled-heart.svg" alt="press F5"/>{likecount}
                                     </span>
                                 </div>
                             </div>
@@ -166,7 +159,7 @@
         /*background-color: #D9D9D9;
         filter: opacity(90%);*/
         background-color: rgba(217, 217, 217, 0.9);
-        height: 65vh;
+        height: 80vh;
         margin-top: 10px;
         display: flex;
         flex-direction: column;
@@ -185,7 +178,7 @@
 
     .book {
         margin-top: 20px;
-        margin-left: 40px;
+        margin-left: 60px;
         width: 13vw;
         height: 58vh;
         background-color: white;
@@ -207,7 +200,7 @@
         font-weight: 800;
     }
     .coment {
-        padding-bottom: 3vh;
+        padding-bottom: 4vh;
     }
     .publish {
         text-align: right;
@@ -222,6 +215,14 @@
         height: 15px;
     }
     .heart > input {
+        width: 15px;
+        height: 15px;
+    }
+    .eye > img {
+        width: 15px;
+        height: 15px;
+    }
+    .heart > img {
         width: 15px;
         height: 15px;
     }
