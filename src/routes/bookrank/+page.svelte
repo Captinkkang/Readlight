@@ -27,13 +27,13 @@
     onMount(async () => {
         let lbook = await fetch(`/DB/rank`);
         let json = await lbook.json();
-        console.log(json)
+        //console.log(json)
         let binfo = await fetch(
             `/bookrecommand/api2?arr=${JSON.stringify(json)}`
         );
         let bson = await binfo.json();
         brr = bson;
-        console.log(brr)
+        //console.log(brr)
         for(let i=0; i<brr.length; i++){
             brr[i].fulltitle = brr[i].title;
             if (brr[i].title.length > 8) {
