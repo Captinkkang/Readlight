@@ -5,12 +5,12 @@ export const GET:RequestHandler = async ({url}) => {
     let brr;
     if(typeof arr === "string"){
         brr = JSON.parse(arr)
-        //console.log(brr,"zzzz")
+        console.log(brr,"zzzz")
         for(let i=0; i<brr.length; i++){
             let res = await fetch(`http://data4library.kr/api/srchDtlList?authKey=b08eefde44fca41c8d13b5574ca3472976670554ea7690a72ab823dba3f44206&isbn13=${brr[i].isbn13}&loaninfoYN=Y&format=json`)
             let zzfQQ = JSON.stringify(await res.json())
             let json = JSON.parse(zzfQQ)
-            //console.log(json)
+            console.log(json,"json")
             if(typeof json.response.error === "string"){
                 //console.log(`${i}번째 이상해씨 발`)
                 brr[i] = {
@@ -55,7 +55,7 @@ export const GET:RequestHandler = async ({url}) => {
                     "age_rank":json.response.loanInfo[3].ageResult
                 }
             }
-        }//console.log(brr)
+        }console.log(brr,"brr")
     }
     
     return new Response(JSON.stringify(brr), {
