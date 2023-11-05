@@ -3,6 +3,7 @@ import type { RequestHandler } from "./$types";
 export const GET:RequestHandler = async ({url}) => {
     let arr = url.searchParams.get("arr")
     let brr;
+    let sent;
     if(typeof arr === "string"){
         brr = JSON.parse(arr)
         console.log(brr,"zzzz")
@@ -31,12 +32,6 @@ export const GET:RequestHandler = async ({url}) => {
                     "all_rank":""
                 }
             }else{
-                //console.log(`${i}번째 인생...`)
-                //console.log(zzfQQ)
-                /*console.log(json.response.loanInfo[0].Total,` 이건 니 전부`)
-                console.log(json.response.loanInfo[1],`이건 니가 살던 집 `)
-                console.log(json.response.loanInfo[2],`이건 니가온 인생`)
-                console.log(json.response.loanInfo[3],`그리고 이건 너의 기억...`)*/
                 brr[i] = {
                     "_id":brr[i]._id,
                     "likecount":brr[i].likecount,
@@ -55,10 +50,11 @@ export const GET:RequestHandler = async ({url}) => {
                     "age_rank":json.response.loanInfo[3].ageResult
                 }
             }
-        }console.log(brr,"brr")
+        }
+        brr = JSON.stringify(brr)
     }
     
-    return new Response(JSON.stringify(brr), {
+    return new Response(brr, {
         headers: {
             'Content-Type':'text/xml'
         }
